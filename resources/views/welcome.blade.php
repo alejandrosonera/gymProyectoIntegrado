@@ -1,7 +1,6 @@
-<x-app-layout>
-    <x-self.base>
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,117 +21,194 @@
             display: flex;
             align-items: center;
         }
-        
+
         .section-padding {
             padding: 80px 0;
         }
-        
+
         .bg-dark-gradient {
             background: linear-gradient(to right, #1a1a1a, #333333);
         }
-        
+
         .trainer-card {
             transition: transform 0.3s;
         }
-        
+
         .trainer-card:hover {
             transform: translateY(-10px);
         }
-        
+
         .class-card {
             border: none;
             border-radius: 10px;
             overflow: hidden;
             transition: transform 0.3s;
         }
-        
+
         .class-card:hover {
             transform: scale(1.03);
         }
-        
+
         .testimonial-card {
             background-color: #f8f9fa;
             border-radius: 10px;
             padding: 20px;
             margin: 20px 10px;
         }
-        
+
         .price-card {
             border-radius: 15px;
             overflow: hidden;
             transition: transform 0.3s;
         }
-        
+
         .price-card:hover {
             transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
-        
+
         .price-card .card-header {
             font-size: 1.5rem;
             font-weight: bold;
         }
-        
+
         .footer {
             background-color: #212529;
             color: white;
             padding: 50px 0 20px;
         }
-        
+
         .social-icons i {
             font-size: 1.5rem;
             margin-right: 15px;
             cursor: pointer;
             transition: color 0.3s;
         }
-        
+
         .social-icons i:hover {
             color: #ff4500;
         }
-        
+
         .btn-primary {
             background-color: #ff4500;
             border-color: #ff4500;
         }
-        
+
         .btn-primary:hover {
             background-color: #e03d00;
             border-color: #e03d00;
         }
-        
+
         .text-primary {
             color: #ff4500 !important;
         }
-        
+
         .bg-primary {
             background-color: #ff4500 !important;
         }
     </style>
 </head>
-<body>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <h1 class="display-3 fw-bold mb-4">TRANSFORMA TU CUERPO, <span class="text-primary">TRANSFORMA TU VIDA</span></h1>
-                    <p class="lead mb-4">Únete a nuestra comunidad fitness y alcanza tus objetivos con entrenadores profesionales y equipamiento de última generación.</p>
-                    <div class="d-flex gap-3">
-                        <a href="#pricing" class="btn btn-primary btn-lg">Comenzar Ahora</a>
-                        <a href="#about" class="btn btn-outline-light btn-lg">Conoce Más</a>
-                    </div>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">FitLife<span class="text-primary">Gym</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#home">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#about">Nosotros</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#classes">Clases</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#trainers">Entrenadores</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#pricing">Precios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">Contacto</a>
+                </li>
+
+                <!-- Mostrar el nombre de usuario si está logueado -->
+                @auth
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-2"></i> <!-- Ícono del usuario -->
+                            <div class="badge bg-primary p-2 rounded-pill">
+                                {{ Auth::user()->name }}
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    Cerrar sesión
+                                </a>
+                                <!-- Formulario de logout -->
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                @else
+                    <!-- Enlace de login con botón resaltado si no está logueado -->
+                    <li class="nav-item">
+                        <a class="btn btn-warning text-dark fw-bold ms-lg-3" href="{{ route('login') }}">Iniciar sesión</a>
+                    </li>
+                @endauth
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+
+<!-- Hero Section -->
+<section id="home" class="hero-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <h1 class="display-3 fw-bold mb-4">TRANSFORMA TU CUERPO, <span class="text-primary">TRANSFORMA TU VIDA</span></h1>
+                <p class="lead mb-4">Únete a nuestra comunidad fitness y alcanza tus objetivos con entrenadores profesionales y equipamiento de última generación.</p>
+                <div class="d-flex gap-3">
+                    @auth
+                        <!-- Mostrar solo cuando el usuario esté logueado -->
+                        <a href="{{ route('showclases') }}" class="btn btn-primary btn-lg">Apuntate ya!!</a>
+                    @else
+                        <!-- Mostrar solo cuando el usuario NO esté logueado -->
+                        <a href="{{ route('login') }}" class="btn btn-primary btn-lg">Comenzar Ahora</a>
+                    @endauth
+
+                    <a href="#about" class="btn btn-outline-light btn-lg">Conoce Más</a>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
+
+
 
     <!-- About Section -->
     <section id="about" class="section-padding">
         <div class="container">
             <div class="row">
                 <div class="col-md-6 mb-4 mb-md-0">
-                    <img src="/placeholder.svg?height=600&width=800" alt="Interior del gimnasio" class="img-fluid rounded">
+                <img src="{{ asset('storage/interior.webp') }}" alt="Interior del gimnasio" class="img-fluid rounded">
+
                 </div>
                 <div class="col-md-6">
                     <div class="ps-md-4">
@@ -173,78 +249,67 @@
         </div>
     </section>
 
-    <!-- Trainers Section -->
-    <section id="trainers" class="section-padding">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h6 class="text-primary">NUESTROS ENTRENADORES</h6>
-                <h2>Profesionales certificados a tu servicio</h2>
-                <p class="lead">Nuestro equipo de entrenadores está aquí para guiarte y motivarte en cada paso</p>
-            </div>
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-3">
-                    <div class="card trainer-card border-0 shadow h-100">
-                        <img src="/placeholder.svg?height=400&width=300" class="card-img-top" alt="Entrenador Carlos">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Carlos Rodríguez</h5>
-                            <p class="text-primary">Entrenador de CrossFit</p>
-                            <p class="card-text">Certificado en CrossFit L3 con más de 8 años de experiencia en entrenamiento funcional.</p>
-                            <div class="social-icons">
-                                <i class="bi bi-facebook"></i>
-                                <i class="bi bi-instagram"></i>
-                                <i class="bi bi-twitter"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card trainer-card border-0 shadow h-100">
-                        <img src="/placeholder.svg?height=400&width=300" class="card-img-top" alt="Entrenadora Laura">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Laura Martínez</h5>
-                            <p class="text-primary">Instructora de Yoga</p>
-                            <p class="card-text">Certificada en Hatha y Vinyasa Yoga con 10 años de práctica y 5 de enseñanza.</p>
-                            <div class="social-icons">
-                                <i class="bi bi-facebook"></i>
-                                <i class="bi bi-instagram"></i>
-                                <i class="bi bi-twitter"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card trainer-card border-0 shadow h-100">
-                        <img src="/placeholder.svg?height=400&width=300" class="card-img-top" alt="Entrenador Miguel">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Miguel Sánchez</h5>
-                            <p class="text-primary">Entrenador Personal</p>
-                            <p class="card-text">Especialista en pérdida de peso y tonificación muscular con más de 12 años de experiencia.</p>
-                            <div class="social-icons">
-                                <i class="bi bi-facebook"></i>
-                                <i class="bi bi-instagram"></i>
-                                <i class="bi bi-twitter"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card trainer-card border-0 shadow h-100">
-                        <img src="/placeholder.svg?height=400&width=300" class="card-img-top" alt="Entrenadora Ana">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Ana López</h5>
-                            <p class="text-primary">Nutricionista Deportiva</p>
-                            <p class="card-text">Licenciada en Nutrición con especialidad en nutrición deportiva y planes alimenticios personalizados.</p>
-                            <div class="social-icons">
-                                <i class="bi bi-facebook"></i>
-                                <i class="bi bi-instagram"></i>
-                                <i class="bi bi-twitter"></i>
-                            </div>
-                        </div>
+    <!-- Classes Section -->
+<section id="classes" class="section-padding bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="text-primary">NUESTRAS CLASES</h6>
+            <h2>Encuentra la clase perfecta para ti</h2>
+            <p class="lead">Clases para todos los niveles, intensidades y objetivos. Desde yoga relajante hasta entrenamientos intensivos como CrossFit.</p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card bg-white shadow-lg border-0">
+                    <div class="card-body text-center">
+                        <h4 class="card-title mb-3">¿Quieres conocer todas nuestras clases?</h4>
+                        <p class="card-text">Explora los horarios disponibles, los entrenadores y el número de participantes en tiempo real. ¡Reserva tu lugar ahora!</p>
+                        <a href="{{ route('showclases') }}" class="btn btn-primary btn-lg mt-3">Ver Clases</a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
+
+    <!-- Trainers Section -->
+<section id="trainers" class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="text-primary">NUESTROS ENTRENADORES</h6>
+            <h2>Profesionales certificados a tu servicio</h2>
+            <p class="lead">Nuestro equipo de entrenadores está aquí para guiarte y motivarte en cada paso</p>
+        </div>
+
+        <div class="row g-4">
+            @forelse ($entrenadores as $entrenador)
+                <div class="col-md-6 col-lg-3">
+                    <div class="card trainer-card border-0 shadow h-100">
+                        <img src="/placeholder.svg?height=400&width=300" class="card-img-top" alt="Entrenador {{ $entrenador->name }}">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ $entrenador->name }}</h5>
+                            <p class="text-primary">{{ $entrenador->especialidad ?? 'Entrenador Personal' }}</p>
+                            <p class="card-text">
+                                {{ $entrenador->descripcion ?? 'Entrenador comprometido con tu progreso y motivación.' }}
+                            </p>
+                            <div class="social-icons">
+                                <i class="bi bi-facebook"></i>
+                                <i class="bi bi-instagram"></i>
+                                <i class="bi bi-twitter"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12 text-center">
+                    <p>No hay entrenadores registrados todavía.</p>
+                </div>
+            @endforelse
+        </div>
+    </div>
+</section>
+
 
     <!-- Pricing Section -->
     <section id="pricing" class="section-padding bg-light">
@@ -320,76 +385,6 @@
         </div>
     </section>
 
-    <!-- Testimonials Section -->
-    <section class="section-padding">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h6 class="text-primary">TESTIMONIOS</h6>
-                <h2>Lo que dicen nuestros miembros</h2>
-                <p class="lead">Historias reales de personas que han transformado sus vidas con nosotros</p>
-            </div>
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="testimonial-card shadow-sm">
-                        <div class="d-flex align-items-center mb-3">
-                            <img src="/placeholder.svg?height=60&width=60" class="rounded-circle me-3" alt="Testimonio de Marta">
-                            <div>
-                                <h5 class="mb-0">Marta García</h5>
-                                <small class="text-muted">Miembro desde 2020</small>
-                            </div>
-                        </div>
-                        <p>"Después de probar varios gimnasios, finalmente encontré mi lugar en FitLife. Los entrenadores son increíbles y la comunidad me ha ayudado a mantenerme motivada. He perdido 15kg en 6 meses y me siento mejor que nunca."</p>
-                        <div class="text-warning">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="testimonial-card shadow-sm">
-                        <div class="d-flex align-items-center mb-3">
-                            <img src="/placeholder.svg?height=60&width=60" class="rounded-circle me-3" alt="Testimonio de Javier">
-                            <div>
-                                <h5 class="mb-0">Javier Ruiz</h5>
-                                <small class="text-muted">Miembro desde 2021</small>
-                            </div>
-                        </div>
-                        <p>"Las clases de CrossFit con Carlos han cambiado completamente mi condición física. He ganado fuerza, resistencia y confianza. El ambiente es inmejorable y siempre me siento motivado para dar lo mejor de mí."</p>
-                        <div class="text-warning">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="testimonial-card shadow-sm">
-                        <div class="d-flex align-items-center mb-3">
-                            <img src="/placeholder.svg?height=60&width=60" class="rounded-circle me-3" alt="Testimonio de Elena">
-                            <div>
-                                <h5 class="mb-0">Elena Moreno</h5>
-                                <small class="text-muted">Miembro desde 2019</small>
-                            </div>
-                        </div>
-                        <p>"El plan nutricional de Ana combinado con las sesiones de entrenamiento personal me han ayudado a alcanzar mis objetivos. He notado cambios no solo en mi físico sino también en mi energía y bienestar general."</p>
-                        <div class="text-warning">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Contact Section -->
     <section id="contact" class="section-padding bg-dark-gradient text-white">
         <div class="container">
@@ -398,7 +393,7 @@
                     <h6 class="text-primary">CONTACTO</h6>
                     <h2 class="mb-4">¿Tienes alguna pregunta? Contáctanos</h2>
                     <p class="lead">Estamos aquí para ayudarte. Ponte en contacto con nosotros y te responderemos lo antes posible.</p>
-                    
+
                     <div class="mt-5">
                         <div class="d-flex mb-4">
                             <div class="me-3">
@@ -434,7 +429,7 @@
                             <div>
                                 <h5>Horario</h5>
                                 <p>Lunes - Viernes: 6:00 - 23:00<br>
-                                Sábados y Domingos: 8:00 - 20:00</p>
+                                    Sábados y Domingos: 8:00 - 20:00</p>
                             </div>
                         </div>
                     </div>
@@ -472,14 +467,15 @@
         </div>
     </section>
 
-    <!-- Map Section -->
-    <section class="container-fluid p-0">
-        <div class="row g-0">
-            <div class="col-12">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12136.861105532872!2d-3.7037974!3d40.4167754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd422997800a3c81%3A0xc436dec1618c2269!2sMadrid%2C%20Spain!5e0!3m2!1sen!2sus!4v1616501324254!5m2!1sen!2sus" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-            </div>
+  <!-- Map Section -->
+<section class="container-fluid p-0">
+    <div class="row g-0">
+        <div class="col-12">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119897.72445246296!2d-2.464598981216431!3d36.83003243507718!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd7259b3b9a0b8cf%3A0x70a5a5a48d57e5ea!2sAlmer%C3%ADa%2C%20Spain!5e0!3m2!1sen!2sus!4v1616501324254!5m2!1sen!2sus" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
         </div>
-    </section>
+    </div>
+</section>
+
 
     <!-- Footer -->
     <footer class="footer">
@@ -530,7 +526,7 @@
             <hr class="mt-4 mb-4 bg-secondary">
             <div class="row">
                 <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-0">&copy; 2023 FitLife Gym. Todos los derechos reservados.</p>
+                    <p class="mb-0">&copy; 2025 FitLife Gym. Todos los derechos reservados.</p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
                     <a href="#" class="text-white text-decoration-none me-3">Política de Privacidad</a>
@@ -543,6 +539,5 @@
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
-    </x-self.base>
-</x-app-layout>
