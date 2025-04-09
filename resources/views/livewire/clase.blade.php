@@ -9,6 +9,18 @@
         </p>
     </div>
 
+    <!-- Buscador y crear clase -->
+    <div>
+        <div>
+            <x-input type="search" wire:model.live="buscar" placeholder="Buscar clases..." class="mt-4" />
+        </div>
+        <div>
+
+        </div>
+    </div>
+
+    @if($clases->count())
+
     <!-- Grid de clases -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
         @foreach ($clases as $clase)
@@ -67,31 +79,31 @@
             <!-- Lógica para apuntarse/desapuntarse -->
             @auth
             @if (Auth::user()->rol === 'cliente' && !$clase->clientes()->where('user_id', auth()->id())->exists() && $clase->participantes_actuales < $clase->max_participantes)
-            <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
-                <button wire:click="apuntarse({{ $clase->id }})" class="inline-flex items-center px-6 py-3 border border-indigo-600 dark:border-indigo-400 rounded-md text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800 hover:bg-indigo-200 dark:hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition duration-300">
-                    Apuntarse a la Clase
-                </button>
-            </div>
-            @elseif (Auth::user()->rol === 'cliente' && $clase->clientes()->where('user_id', auth()->id())->exists())
-            <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
-                <button wire:click="desapuntarse({{ $clase->id }})" class="inline-flex items-center px-6 py-3 border border-red-600 dark:border-red-400 rounded-md text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 hover:bg-red-200 dark:hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-red-400 transition duration-300">
-                    Desapuntarse de la Clase
-                </button>
-            </div>
-            @elseif ($clase->participantes_actuales >= $clase->max_participantes)
-            <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
-                <span class="text-sm text-gray-600 dark:text-gray-400">
-                    No hay espacio disponible en esta clase.
-                </span>
-            </div>
-            @endif
-            @else
-            <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
-                <a href="{{ route('login') }}" class="inline-flex items-center px-6 py-3 border border-indigo-600 dark:border-indigo-400 rounded-md text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800 hover:bg-indigo-200 dark:hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition duration-300">
-                    Inicia sesión para apuntarte
-                </a>
-            </div>
-            @endauth
+                <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
+                    <button wire:click="apuntarse({{ $clase->id }})" class="inline-flex items-center px-6 py-3 border border-indigo-600 dark:border-indigo-400 rounded-md text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800 hover:bg-indigo-200 dark:hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition duration-300">
+                        Apuntarse a la Clase
+                    </button>
+                </div>
+                @elseif (Auth::user()->rol === 'cliente' && $clase->clientes()->where('user_id', auth()->id())->exists())
+                <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
+                    <button wire:click="desapuntarse({{ $clase->id }})" class="inline-flex items-center px-6 py-3 border border-red-600 dark:border-red-400 rounded-md text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 hover:bg-red-200 dark:hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-red-400 transition duration-300">
+                        Desapuntarse de la Clase
+                    </button>
+                </div>
+                @elseif ($clase->participantes_actuales >= $clase->max_participantes)
+                <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">
+                        No hay espacio disponible en esta clase.
+                    </span>
+                </div>
+                @endif
+                @else
+                <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
+                    <a href="{{ route('login') }}" class="inline-flex items-center px-6 py-3 border border-indigo-600 dark:border-indigo-400 rounded-md text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800 hover:bg-indigo-200 dark:hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition duration-300">
+                        Inicia sesión para apuntarte
+                    </a>
+                </div>
+                @endauth
 
         </div>
         @endforeach
@@ -101,45 +113,57 @@
     <div class="text-center py-6 mt-6">
         {{$clases->links()}}
     </div>
+    @else
+    <div class="mt-6">
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 px-6 py-4 rounded-lg shadow-md dark:bg-yellow-200 dark:text-yellow-900 animate-fade-in">
+            <p class="font-medium flex items-center gap-2">
+                <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 18.5a6.5 6.5 0 100-13 6.5 6.5 0 000 13z" />
+                </svg>
+                No se encontró ninguna clase con la búsqueda proporcionada.
+            </p>
+        </div>
+    </div>
+    @endif
 
 
     <!-- Modal para ver los usuarios apuntados -->
-@if (!empty($usuariosApuntados))
-<div class="fixed inset-0 flex items-center justify-center z-50 p-4 bg-black bg-opacity-50">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl p-6">
-        <div class="flex justify-between items-center">
-            <h2 class="text-3xl font-semibold text-indigo-600 dark:text-indigo-400">
-                Participantes en la Clase
-            </h2>
-            <button wire:click="closeModal" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-        </div>
+    @if (!empty($usuariosApuntados) && $showModal)
+    <div class="fixed inset-0 flex items-center justify-center z-50 p-4 bg-black bg-opacity-50">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl p-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-3xl font-semibold text-indigo-600 dark:text-indigo-400">
+                    Participantes en la Clase
+                </h2>
+                <button wire:click="closeModal" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
 
-        <div class="mt-4">
-            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
-                @if ($clase->clientes->count() > 0)
+            <div class="mt-4">
+                <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+                    @if ($clase->clientes->count() > 0)
                     <ul class="space-y-3">
                         @foreach ($clase->clientes as $cliente)
-                            <li class="flex items-center justify-between p-2 bg-white dark:bg-gray-600 rounded-md shadow-sm">
-                                <span class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ $cliente->name }} {{ $cliente->apellido }}</span>
-                                <span class="text-xs text-gray-500 dark:text-gray-400">{{ \Carbon\Carbon::parse($cliente->pivot->created_at)->format('d/m/Y H:i') }}</span>
-                            </li>
+                        <li class="flex items-center justify-between p-2 bg-white dark:bg-gray-600 rounded-md shadow-sm">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ $cliente->name }} {{ $cliente->apellido }}</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">{{ \Carbon\Carbon::parse($cliente->pivot->created_at)->format('d/m/Y H:i') }}</span>
+                        </li>
                         @endforeach
                     </ul>
-                @else
+                    @else
                     <p class="text-center text-gray-600 dark:text-gray-400">No hay participantes en esta clase.</p>
-                @endif
+                    @endif
+                </div>
+            </div>
+
+            <div class="mt-6 text-center">
+                <button wire:click="closeModal" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    Cerrar
+                </button>
             </div>
         </div>
-
-        <div class="mt-6 text-center">
-            <button wire:click="closeModal" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                Cerrar
-            </button>
-        </div>
     </div>
-</div>
-@endif
+    @endif
 
 </div>

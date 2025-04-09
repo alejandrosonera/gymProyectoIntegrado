@@ -14,6 +14,8 @@ class Clase extends Component
 {
     use WithPagination;
 
+    public bool $showModal=false;
+
 
     public string $buscar = "";
     public $usuariosApuntados = []; // Para almacenar los usuarios apuntados
@@ -83,6 +85,8 @@ class Clase extends Component
 
     public function verUsuariosApuntados(int $claseId)
     {
+        $this->showModal=true;
+
         // Obtener la clase con los usuarios apuntados
         $clase = ModelsClase::findOrFail($claseId);
 
@@ -93,7 +97,9 @@ class Clase extends Component
         $this->dispatch('onMostrarUsuarios', ModelsClase::class); // Esto emite un evento para abrir un modal o actualizar la vista
     }
 
-
+    public function closeModal() {
+        $this->showModal = false;
+    }
 
 
     public function deleteClase($id)
