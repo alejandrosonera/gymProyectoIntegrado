@@ -23,7 +23,7 @@ class Clase extends Component
 
     public function render()
     {
-        $clases = ModelsClase::with('entrenador')
+        $clases = ModelsClase::with('entrenador', 'clientes')
             ->where(function ($q) {
                 $q->where('nombre', 'like', "%{$this->buscar}%")
                     ->orWhere('descripcion', 'like', "%{$this->buscar}%");
@@ -71,10 +71,6 @@ class Clase extends Component
         // Desapuntar al usuario de la clase
         $clase->clientes()->detach(Auth::id());
 
-        // Actualizar los participantes actuales si es necesario
-        // Puedes restar uno de los participantes actuales (si lo deseas)
-        $numeroParticipantes = $clase->clientes()->count(); // Contar el número de clientes asociados
-        $numeroParticipantes = max(0, $clase->participantes_actuales - 1); // Evita que los participantes sean negativos
         $clase->save();
 
         // SweetAlert de éxito

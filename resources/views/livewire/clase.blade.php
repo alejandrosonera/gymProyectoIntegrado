@@ -78,7 +78,11 @@
 
             <!-- Lógica para apuntarse/desapuntarse -->
             @auth
-            @if (Auth::user()->rol === 'cliente' && !$clase->clientes()->where('user_id', auth()->id())->exists() && $clase->participantes_actuales < $clase->max_participantes)
+            @if (
+            Auth::user()->rol === 'cliente'
+            && !$clase->clientes->contains(auth()->id())
+            && $clase->clientes->count() < $clase->max_participantes
+                )
                 <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
                     <button wire:click="apuntarse({{ $clase->id }})" class="inline-flex items-center px-6 py-3 border border-indigo-600 dark:border-indigo-400 rounded-md text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800 hover:bg-indigo-200 dark:hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition duration-300">
                         Apuntarse a la Clase
@@ -90,7 +94,7 @@
                         Desapuntarse de la Clase
                     </button>
                 </div>
-                @elseif ($clase->participantes_actuales >= $clase->max_participantes)
+                @elseif ($clase->clientes()->count() >= $clase->max_participantes)
                 <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
                     <span class="text-sm text-gray-600 dark:text-gray-400">
                         No hay espacio disponible en esta clase.
