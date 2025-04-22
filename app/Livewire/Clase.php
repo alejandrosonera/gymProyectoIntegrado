@@ -6,6 +6,7 @@ use App\Models\Clase as ModelsClase;
 use Illuminate\Console\View\Components\Alert;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\WithPagination;
 
 use function Laravel\Prompts\alert;
@@ -14,13 +15,13 @@ class Clase extends Component
 {
     use WithPagination;
 
-    public bool $showModal=false;
+    public bool $showModal = false;
 
 
     public string $buscar = "";
     public $usuariosApuntados = []; // Para almacenar los usuarios apuntados
 
-
+    #[On('onClaseCreada')]
     public function render()
     {
         $clases = ModelsClase::with('entrenador', 'clientes')
@@ -32,6 +33,11 @@ class Clase extends Component
             ->paginate(3);
 
         return view('livewire.clase', compact('clases'));
+    }
+
+    public function updatingBuscar()
+    {
+        $this->reset();
     }
 
     public function apuntarse(int $claseId)
@@ -81,34 +87,42 @@ class Clase extends Component
 
     public function verUsuariosApuntados(int $claseId)
     {
-        $this->showModal=true;
+        $this->showModal = true;
 
-        // Obtener la clase con los usuarios apuntados
         $clase = ModelsClase::findOrFail($claseId);
 
-        // Obtener los usuarios apuntados a esta clase
-        $this->usuariosApuntados = $clase->clientes; // Aquí asumimos que tienes una relación 'clientes' definida en el modelo de la clase
+        // Obtener solo usuarios con rol cliente que estén apuntados
+        $this->usuariosApuntados = $clase->clientes()->where('rol', 'cliente')->get();
 
-        // Mostrar un modal o sección con los usuarios
-        $this->dispatch('onMostrarUsuarios', ModelsClase::class); // Esto emite un evento para abrir un modal o actualizar la vista
+        $this->dispatch('onMostrarUsuarios', ModelsClase::class);
     }
 
-    public function closeModal() {
+
+    public function closeModal()
+    {
         $this->showModal = false;
     }
 
 
+    //METODOS PARA BORRAR
+
+    public function confirmarDelete(ModelsClase $clase)
+    {
+        // $this->authorize('delete', $clase);
+        $this->dispatch('onBorrarClase', $clase->id);
+    }
+
+    #[On('borrarOk')]
     public function deleteClase($id)
     {
-        $clase = Clase::find($id);
+        $clase = ModelsClase::find($id);
 
         if ($clase) {
             // Verificar que el usuario logueado es el entrenador de la clase
             if (Auth::user()->id === $clase->entrenador_id) {
                 $clase->delete();
-                session()->flash('message', 'Clase eliminada con éxito');
-            } else {
-                session()->flash('error', 'No tienes permiso para eliminar esta clase');
+                // SweetAlert de éxito
+                $this->dispatch('mensaje', 'Clase eliminada con éxito.');
             }
         }
     }

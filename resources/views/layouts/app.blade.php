@@ -43,5 +43,30 @@
         @stack('modals')
 
         @livewireScripts
+        <script>
+        Livewire.on('mensaje', txt => {
+            Swal.fire({
+                icon: "success",
+                title: txt,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        })
+        Livewire.on('onBorrarClase', id => {
+            Swal.fire({
+                title: "Estas seguro?",
+                text: "No podras revertir esta acción!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, quiero borrarla!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                   Livewire.dispatchTo('clase', 'borrarOk', id)
+                }
+            });
+        })
+    </script>
     </body>
 </html>

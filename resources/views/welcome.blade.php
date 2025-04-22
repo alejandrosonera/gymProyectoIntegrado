@@ -10,136 +10,41 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <!-- Custom CSS -->
-    <style>
-        .hero-section {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/placeholder.svg?height=800&width=1600');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 100px 0;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-        }
-
-        .section-padding {
-            padding: 80px 0;
-        }
-
-        .bg-dark-gradient {
-            background: linear-gradient(to right, #1a1a1a, #333333);
-        }
-
-        .trainer-card {
-            transition: transform 0.3s;
-        }
-
-        .trainer-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .class-card {
-            border: none;
-            border-radius: 10px;
-            overflow: hidden;
-            transition: transform 0.3s;
-        }
-
-        .class-card:hover {
-            transform: scale(1.03);
-        }
-
-        .testimonial-card {
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 10px;
-        }
-
-        .price-card {
-            border-radius: 15px;
-            overflow: hidden;
-            transition: transform 0.3s;
-        }
-
-        .price-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .price-card .card-header {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .footer {
-            background-color: #212529;
-            color: white;
-            padding: 50px 0 20px;
-        }
-
-        .social-icons i {
-            font-size: 1.5rem;
-            margin-right: 15px;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-
-        .social-icons i:hover {
-            color: #ff4500;
-        }
-
-        .btn-primary {
-            background-color: #ff4500;
-            border-color: #ff4500;
-        }
-
-        .btn-primary:hover {
-            background-color: #e03d00;
-            border-color: #e03d00;
-        }
-
-        .text-primary {
-            color: #ff4500 !important;
-        }
-
-        .bg-primary {
-            background-color: #ff4500 !important;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/principal.css') }}">
 </head>
 
-<body>
-<!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <div class="container">
-        <a class="navbar-brand" href="#">FitLife<span class="text-primary">Gym</span></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#home">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#about">Nosotros</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#classes">Clases</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#trainers">Entrenadores</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#pricing">Precios</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#contact">Contacto</a>
-                </li>
 
-                <!-- Mostrar el nombre de usuario si está logueado -->
-                @auth
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">FitLife<span class="text-primary">Gym</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#classes">Clases</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#trainers">Entrenadores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#pricing">Precios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contacto</a>
+                    </li>
+
+                    <!-- Mostrar el nombre de usuario si está logueado -->
+                    @auth
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle me-2"></i> <!-- Ícono del usuario -->
@@ -150,7 +55,7 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                             <li>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
-                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     Cerrar sesión
                                 </a>
                                 <!-- Formulario de logout -->
@@ -160,44 +65,44 @@
                             </li>
                         </ul>
                     </li>
-                @else
+                    @else
                     <!-- Enlace de login con botón resaltado si no está logueado -->
                     <li class="nav-item">
                         <a class="btn btn-warning text-dark fw-bold ms-lg-3" href="{{ route('login') }}">Iniciar sesión</a>
                     </li>
-                @endauth
-            </ul>
+                    @endauth
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
 
 
 
 
 
-<!-- Hero Section -->
-<section id="home" class="hero-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6">
-                <h1 class="display-3 fw-bold mb-4">TRANSFORMA TU CUERPO, <span class="text-primary">TRANSFORMA TU VIDA</span></h1>
-                <p class="lead mb-4">Únete a nuestra comunidad fitness y alcanza tus objetivos con entrenadores profesionales y equipamiento de última generación.</p>
-                <div class="d-flex gap-3">
-                    @auth
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h1 class="display-3 fw-bold mb-4">TRANSFORMA TU CUERPO, <span class="text-primary">TRANSFORMA TU VIDA</span></h1>
+                    <p class="lead mb-4">Únete a nuestra comunidad fitness y alcanza tus objetivos con entrenadores profesionales y equipamiento de última generación.</p>
+                    <div class="d-flex gap-3">
+                        @auth
                         <!-- Mostrar solo cuando el usuario esté logueado -->
                         <a href="{{ route('showclases') }}" class="btn btn-primary btn-lg">Apuntate ya!!</a>
-                    @else
+                        @else
                         <!-- Mostrar solo cuando el usuario NO esté logueado -->
                         <a href="{{ route('login') }}" class="btn btn-primary btn-lg">Comenzar Ahora</a>
-                    @endauth
+                        @endauth
 
-                    <a href="#about" class="btn btn-outline-light btn-lg">Conoce Más</a>
+                        <a href="#about" class="btn btn-outline-light btn-lg">Conoce Más</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
 
@@ -207,7 +112,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 mb-4 mb-md-0">
-                <img src="{{ asset('storage/interior.webp') }}" alt="Interior del gimnasio" class="img-fluid rounded">
+                    <img src="{{ asset('storage/interior.webp') }}" alt="Interior del gimnasio" class="img-fluid rounded">
 
                 </div>
                 <div class="col-md-6">
@@ -250,40 +155,40 @@
     </section>
 
     <!-- Classes Section -->
-<section id="classes" class="section-padding bg-light">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h6 class="text-primary">NUESTRAS CLASES</h6>
-            <h2>Encuentra la clase perfecta para ti</h2>
-            <p class="lead">Clases para todos los niveles, intensidades y objetivos. Desde yoga relajante hasta entrenamientos intensivos como CrossFit.</p>
-        </div>
+    <section id="classes" class="section-padding bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h6 class="text-primary">NUESTRAS CLASES</h6>
+                <h2>Encuentra la clase perfecta para ti</h2>
+                <p class="lead">Clases para todos los niveles, intensidades y objetivos. Desde yoga relajante hasta entrenamientos intensivos como CrossFit.</p>
+            </div>
 
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card bg-white shadow-lg border-0">
-                    <div class="card-body text-center">
-                        <h4 class="card-title mb-3">¿Quieres conocer todas nuestras clases?</h4>
-                        <p class="card-text">Explora los horarios disponibles, los entrenadores y el número de participantes en tiempo real. ¡Reserva tu lugar ahora!</p>
-                        <a href="{{ route('showclases') }}" class="btn btn-primary btn-lg mt-3">Ver Clases</a>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card bg-white shadow-lg border-0">
+                        <div class="card-body text-center">
+                            <h4 class="card-title mb-3">¿Quieres conocer todas nuestras clases?</h4>
+                            <p class="card-text">Explora los horarios disponibles, los entrenadores y el número de participantes en tiempo real. ¡Reserva tu lugar ahora!</p>
+                            <a href="{{ route('showclases') }}" class="btn btn-primary btn-lg mt-3">Ver Clases</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
     <!-- Trainers Section -->
-<section id="trainers" class="section-padding">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h6 class="text-primary">NUESTROS ENTRENADORES</h6>
-            <h2>Profesionales certificados a tu servicio</h2>
-            <p class="lead">Nuestro equipo de entrenadores está aquí para guiarte y motivarte en cada paso</p>
-        </div>
+    <section id="trainers" class="section-padding">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h6 class="text-primary">NUESTROS ENTRENADORES</h6>
+                <h2>Profesionales certificados a tu servicio</h2>
+                <p class="lead">Nuestro equipo de entrenadores está aquí para guiarte y motivarte en cada paso</p>
+            </div>
 
-        <div class="row g-4">
-            @forelse ($entrenadores as $entrenador)
+            <div class="row g-4">
+                @forelse ($entrenadores as $entrenador)
                 <div class="col-md-6 col-lg-3">
                     <div class="card trainer-card border-0 shadow h-100">
                         <img src="/placeholder.svg?height=400&width=300" class="card-img-top" alt="Entrenador {{ $entrenador->name }}">
@@ -301,14 +206,14 @@
                         </div>
                     </div>
                 </div>
-            @empty
+                @empty
                 <div class="col-12 text-center">
                     <p>No hay entrenadores registrados todavía.</p>
                 </div>
-            @endforelse
+                @endforelse
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
     <!-- Pricing Section -->
@@ -467,14 +372,14 @@
         </div>
     </section>
 
-  <!-- Map Section -->
-<section class="container-fluid p-0">
-    <div class="row g-0">
-        <div class="col-12">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119897.72445246296!2d-2.464598981216431!3d36.83003243507718!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd7259b3b9a0b8cf%3A0x70a5a5a48d57e5ea!2sAlmer%C3%ADa%2C%20Spain!5e0!3m2!1sen!2sus!4v1616501324254!5m2!1sen!2sus" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+    <!-- Map Section -->
+    <section class="container-fluid p-0">
+        <div class="row g-0">
+            <div class="col-12">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119897.72445246296!2d-2.464598981216431!3d36.83003243507718!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd7259b3b9a0b8cf%3A0x70a5a5a48d57e5ea!2sAlmer%C3%ADa%2C%20Spain!5e0!3m2!1sen!2sus!4v1616501324254!5m2!1sen!2sus" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
     <!-- Footer -->

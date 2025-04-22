@@ -10,12 +10,12 @@
     </div>
 
     <!-- Buscador y crear clase -->
-    <div>
+    <div class="flex justify-between items-center mt-6">
         <div>
             <x-input type="search" wire:model.live="buscar" placeholder="Buscar clases..." class="mt-4" />
         </div>
         <div>
-
+            @livewire('crear-clase')
         </div>
     </div>
 
@@ -63,7 +63,7 @@
                 <button wire:click="edit({{ $clase->id }})" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 transition-all">
                     <i class="fas fa-edit text-green-500 hover:text-xl"></i>
                 </button>
-                <button wire:click="deleteClase({{ $clase->id }})" class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200 transition-all">
+                <button wire:click="confirmarDelete({{ $clase->id }})" class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200 transition-all">
                     <i class="fas fa-trash text-red-500 hover:text-xl"></i>
                 </button>
 
