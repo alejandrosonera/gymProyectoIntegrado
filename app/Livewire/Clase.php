@@ -46,22 +46,86 @@ class Clase extends Component
 
         // Verificar si ya está apuntado
         if ($clase->clientes()->where('user_id', Auth::id())->exists()) {
-            session()->flash('error', 'Ya estás apuntado a esta clase.');
+            $this->dispatch('mensaje', 'Ya estás apuntado a esta clase.');
             return;
         }
 
         // Verificar si la clase tiene espacio
         $numeroParticipantes = $clase->clientes()->count(); // Contar el número de clientes asociados
         if ($numeroParticipantes >= $clase->max_participantes) {
-            session()->flash('error', 'No hay espacio disponible en esta clase.');
+            $this->dispatch('mensaje', 'No hay espacio disponible en esta clase.');
             return;
+        }
+
+        // Verificar si el usuario ya está apuntado a otra clase en el mismo día
+        $fechaClaseActual = \Carbon\Carbon::parse($clase->fecha_hora);
+
+        $clasesUsuario = ModelsClase::whereHas('clientes', function($query) {
+            $query->where('user_id', Auth::id());
+        })->get();
+
+        foreach ($clasesUsuario as $claseUsuario) {
+            $fechaClaseUsuario = \Carbon\Carbon::parse($claseUsuario->fecha_hora);
+
+            // Verificar si es el mismo día
+            if ($fechaClaseActual->isSameDay($fechaClaseUsuario)) {
+                $mensaje = "No puedes apuntarte a esta clase porque ya estás inscrito en '{$claseUsuario->nombre}' ";
+                $mensaje .= "el mismo día (" . $fechaClaseUsuario->format('d/m/Y') . ") ";
+                $mensaje .= "a las " . $fechaClaseUsuario->format('H:i') . ".";
+
+                $this->dispatch('mensaje', $mensaje);
+                return;
+            }
         }
 
         // Apuntar al usuario
         $clase->clientes()->attach(Auth::id());
-
-        $this->dispatch('mensaje', 'Apuntado a la clase con éxito.');
     }
+
+    // Nuevo método para verificar si un usuario puede apuntarse a una clase
+    public function puedeApuntarse(int $claseId)
+    {
+        if (!Auth::check()) {
+            return false;
+        }
+
+        $clase = ModelsClase::findOrFail($claseId);
+
+        // Verificar si ya está apuntado a esta clase
+        if ($clase->clientes()->where('user_id', Auth::id())->exists()) {
+            return false;
+        }
+
+        // Verificar si la clase tiene espacio
+        $numeroParticipantes = $clase->clientes()->count();
+        if ($numeroParticipantes >= $clase->max_participantes) {
+            return false;
+        }
+
+        // Verificar si el usuario ya está apuntado a otra clase en el mismo día
+        $clasesUsuario = ModelsClase::whereHas('clientes', function($query) {
+            $query->where('user_id', Auth::id());
+        })
+        ->where('fecha', $clase->fecha)
+        ->get();
+
+        if ($clasesUsuario->count() > 0) {
+            foreach ($clasesUsuario as $claseUsuario) {
+                // Verificar solapamiento de horarios
+                if (
+                    ($clase->hora_inicio >= $claseUsuario->hora_inicio && $clase->hora_inicio < $claseUsuario->hora_fin) ||
+                    ($clase->hora_fin > $claseUsuario->hora_inicio && $clase->hora_fin <= $claseUsuario->hora_fin) ||
+                    ($clase->hora_inicio <= $claseUsuario->hora_inicio && $clase->hora_fin >= $claseUsuario->hora_fin)
+                ) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+
 
     public function desapuntarse(int $claseId)
     {
@@ -78,9 +142,6 @@ class Clase extends Component
         $clase->clientes()->detach(Auth::id());
 
         $clase->save();
-
-        // SweetAlert de éxito
-        $this->dispatch('mensaje', 'Desapuntado de la clase con éxito.');
     }
 
 

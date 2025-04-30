@@ -8,7 +8,6 @@
             Consulta las clases disponibles y sus detalles.
         </p>
     </div>
-
     <!-- Buscador y crear clase -->
     <div class="flex justify-between items-center mt-6">
         <div>
@@ -18,9 +17,7 @@
             @livewire('crear-clase')
         </div>
     </div>
-
     @if($clases->count())
-
     <!-- Grid de clases -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
         @foreach ($clases as $clase)
@@ -30,12 +27,10 @@
                 <h3 class="text-2xl font-semibold text-indigo-600 dark:text-indigo-400 mb-4 text-center">
                     {{ $clase->nombre }}
                 </h3>
-
                 <!-- Descripción -->
                 <p class="text-gray-700 dark:text-gray-300 text-sm mb-4">
                     {{ Str::limit($clase->descripcion, 90) }}
                 </p>
-
                 <!-- Detalles -->
                 <div class="flex items-center text-gray-600 dark:text-gray-400 text-sm mb-3">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -56,7 +51,6 @@
                     Participantes: {{ $clase->clientes->count() }} / {{ $clase->max_participantes }}
                 </div>
             </div>
-
             <!-- Acciones del entrenador -->
             @if (Auth::user()->id === $clase->entrenador_id)
             <div class="flex justify-between px-6 py-3 bg-gray-50 dark:bg-gray-700">
@@ -66,7 +60,6 @@
                 <button wire:click="confirmarDelete({{ $clase->id }})" class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200 transition-all">
                     <i class="fas fa-trash text-red-500 hover:text-xl"></i>
                 </button>
-
                 <!-- Botón para ver los usuarios apuntados (solo para administradores) -->
                 @if (Auth::user()->rol === 'entrenador')
                 <button wire:click="verUsuariosApuntados({{ $clase->id }})" class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-800 dark:hover:text-yellow-200 transition-all">
@@ -75,44 +68,82 @@
                 @endif
             </div>
             @endif
-
             <!-- Lógica para apuntarse/desapuntarse -->
             @auth
-            @if (
-            Auth::user()->rol === 'cliente'
-            && !$clase->clientes->contains(auth()->id())
-            && $clase->clientes->count() < $clase->max_participantes
-                )
-                <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
-                    <button wire:click="apuntarse({{ $clase->id }})" class="inline-flex items-center px-6 py-3 border border-indigo-600 dark:border-indigo-400 rounded-md text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800 hover:bg-indigo-200 dark:hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition duration-300">
-                        Apuntarse a la Clase
-                    </button>
-                </div>
-                @elseif (Auth::user()->rol === 'cliente' && $clase->clientes()->where('user_id', auth()->id())->exists())
-                <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
-                    <button wire:click="desapuntarse({{ $clase->id }})" class="inline-flex items-center px-6 py-3 border border-red-600 dark:border-red-400 rounded-md text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 hover:bg-red-200 dark:hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-red-400 transition duration-300">
-                        Desapuntarse de la Clase
-                    </button>
-                </div>
+            @if (Auth::user()->rol === 'cliente')
+                @if (!$clase->clientes->contains(auth()->id()) && $clase->clientes->count() < $clase->max_participantes)
+                    <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800">
+                        <!-- Verificar si hay conflicto de horario -->
+                        @php
+                            $tieneConflicto = false;
+                            $claseConflicto = null;
+
+                            // Obtener solo las clases a las que el usuario está apuntado
+                            $clasesUsuario = App\Models\Clase::whereHas('clientes', function($query) {
+                                $query->where('user_id', Auth::id());
+                            })->get();
+
+                            // Convertir la fecha de la clase actual a un objeto Carbon para comparación
+                            $fechaClaseActual = \Carbon\Carbon::parse($clase->fecha_hora);
+
+                            foreach ($clasesUsuario as $claseUsuario) {
+                                // Convertir la fecha de la clase del usuario a un objeto Carbon
+                                $fechaClaseUsuario = \Carbon\Carbon::parse($claseUsuario->fecha_hora);
+
+                                // Solo verificar conflicto si es el mismo día y no es la misma clase
+                                if ($fechaClaseActual->isSameDay($fechaClaseUsuario) && $clase->id != $claseUsuario->id) {
+                                    $tieneConflicto = true;
+                                    $claseConflicto = $claseUsuario;
+                                    break;
+                                }
+                            }
+                        @endphp
+
+                        @if ($tieneConflicto)
+                            <div class="mb-2 text-sm text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900 p-2 rounded-md">
+                                <p>No puedes apuntarte a esta clase porque ya estás inscrito en "{{ $claseConflicto->nombre }}" el mismo día
+                                ({{ \Carbon\Carbon::parse($claseConflicto->fecha_hora)->format('d/m/Y') }})
+                                a las {{ \Carbon\Carbon::parse($claseConflicto->fecha_hora)->format('H:i') }}.</p>
+                            </div>
+                            <button
+                                class="inline-flex items-center px-6 py-3 border border-gray-400 rounded-md text-sm font-medium text-gray-400 bg-gray-100 dark:bg-gray-700 cursor-not-allowed w-full justify-center"
+                                disabled
+                            >
+                                No disponible - Ya tienes una clase este día
+                            </button>
+                        @else
+                            <button
+                                wire:click="apuntarse({{ $clase->id }})"
+                                class="inline-flex items-center px-6 py-3 border border-indigo-600 dark:border-indigo-400 rounded-md text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800 hover:bg-indigo-200 dark:hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition duration-300 w-full justify-center"
+                            >
+                                Apuntarse a la Clase
+                            </button>
+                        @endif
+                    </div>
+                @elseif ($clase->clientes()->where('user_id', auth()->id())->exists())
+                    <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
+                        <button wire:click="desapuntarse({{ $clase->id }})" class="inline-flex items-center px-6 py-3 border border-red-600 dark:border-red-400 rounded-md text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 hover:bg-red-200 dark:hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-red-400 transition duration-300 w-full justify-center">
+                            Desapuntarse de la Clase
+                        </button>
+                    </div>
                 @elseif ($clase->clientes()->count() >= $clase->max_participantes)
-                <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
-                    <span class="text-sm text-gray-600 dark:text-gray-400">
-                        No hay espacio disponible en esta clase.
-                    </span>
-                </div>
+                    <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-center">
+                        <span class="text-sm text-gray-600 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 p-2 rounded-md inline-block">
+                            No hay espacio disponible en esta clase.
+                        </span>
+                    </div>
                 @endif
-                @else
+            @endif
+            @else
                 <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
                     <a href="{{ route('login') }}" class="inline-flex items-center px-6 py-3 border border-indigo-600 dark:border-indigo-400 rounded-md text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800 hover:bg-indigo-200 dark:hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition duration-300">
                         Inicia sesión para apuntarte
                     </a>
                 </div>
-                @endauth
-
+            @endauth
         </div>
         @endforeach
     </div>
-
     <!-- Paginación centrada -->
     <div class="text-center py-6 mt-6">
         {{$clases->links()}}
@@ -129,8 +160,6 @@
         </div>
     </div>
     @endif
-
-
     <!-- Modal para ver los usuarios apuntados -->
     @if (!empty($usuariosApuntados) && $showModal)
     <div class="fixed inset-0 flex items-center justify-center z-50 p-4 bg-black bg-opacity-50">
@@ -143,7 +172,6 @@
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-
             <div class="mt-4">
                 <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
                     @if ($clase->clientes->count() > 0)
@@ -160,7 +188,6 @@
                     @endif
                 </div>
             </div>
-
             <div class="mt-6 text-center">
                 <button wire:click="closeModal" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     Cerrar
@@ -169,5 +196,4 @@
         </div>
     </div>
     @endif
-
 </div>
