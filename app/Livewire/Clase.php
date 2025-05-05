@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Livewire\Forms\FormUpdateClase;
 use App\Models\Clase as ModelsClase;
 use Illuminate\Console\View\Components\Alert;
 use Livewire\Component;
@@ -16,6 +17,9 @@ class Clase extends Component
     use WithPagination;
 
     public bool $showModal = false;
+
+    public FormUpdateClase $uform;
+    public bool $abrirUpdate = false;
 
 
     public string $buscar = "";
@@ -152,11 +156,13 @@ class Clase extends Component
 
         $clase = ModelsClase::findOrFail($claseId);
 
-        // Obtener solo usuarios con rol cliente que estén apuntados
-        $this->usuariosApuntados = $clase->clientes()->where('rol', 'cliente')->get();
+        // Esto obtiene SOLO los usuarios apuntados a esta clase específica
+        // Y filtra correctamente para mostrar solo los que tienen rol 'cliente'
+        $this->usuariosApuntados = $clase->clientes()->where('users.rol', 'cliente')->get();
 
         $this->dispatch('onMostrarUsuarios', ModelsClase::class);
     }
+
 
 
     public function closeModal()
@@ -186,5 +192,26 @@ class Clase extends Component
                 $this->dispatch('mensaje', 'Clase eliminada con éxito.');
             }
         }
+    }
+
+    //METODOS PARA EDITAR
+    public function edit(ModelsClase $clase) {
+        // $this->authorize('update', $clase);
+        $this->uform->setClase($clase);
+        $this->abrirUpdate=true;
+    }
+    public function update() {
+        $success = $this->uform->formUpdate();
+
+        if ($success) {
+            // Actualización exitosa
+            $this->abrirUpdate = false;
+            $this->dispatch('mensaje', 'Clase actualizada con éxito.');
+        }
+        // Si falla, no se cierra el modal y se muestra el error en el formulario
+    }
+    public function cancelar() {
+        $this->abrirUpdate=false;
+        $this->uform->formReset();
     }
 }

@@ -191,7 +191,7 @@
                 @forelse ($entrenadores as $entrenador)
                 <div class="col-md-6 col-lg-3">
                     <div class="card trainer-card border-0 shadow h-100">
-                        <img src="/placeholder.svg?height=400&width=300" class="card-img-top" alt="Entrenador {{ $entrenador->name }}">
+                        <img src="{{ $entrenador->profile_photo_path }}" class="card-img-top" alt="Entrenador {{ $entrenador->name }}">
                         <div class="card-body text-center">
                             <h5 class="card-title">{{ $entrenador->name }}</h5>
                             <p class="text-primary">{{ $entrenador->especialidad ?? 'Entrenador Personal' }}</p>
@@ -216,7 +216,7 @@
     </section>
 
 
-    <!-- Pricing Section -->
+    <!-- Pricing Section
     <section id="pricing" class="section-padding bg-light">
         <div class="container">
             <div class="text-center mb-5">
@@ -288,7 +288,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Contact Section -->
     <section id="contact" class="section-padding bg-dark-gradient text-white">
