@@ -1,8 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            🛍️ Tienda del Gimnasio
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                🛍️ Tienda del Gimnasio
+            </h2>
+            <a href="{{ route('productos.create') }}" 
+               class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+                + Nuevo Producto
+            </a>
+        </div>
     </x-slot>
 
     <div class="py-8">
@@ -14,10 +20,7 @@
                             {{ $producto->nombre }}
                         </h3>
                         <p class="text-gray-700 text-sm mb-4">
-                        <img src="{{ asset('storage/' . $producto->imagen) }}" alt="..." class="..." />
-
-
-
+                            <img src="{{ asset('storage/' . $producto->imagen) }}" alt="..." class="..." />
                         </p>
                         <p class="text-gray-700 text-sm mb-4">
                             {{ $producto->descripcion }}
