@@ -24,6 +24,13 @@ Route::middleware([
 Route::get('/tienda', [ProductoController::class, 'index'])->name('tienda.index');
 
 Route::resource('productos', ProductoController::class);
-Route::post('/carrito/agregar', [CarritoController::class, 'agregar'])->name('carrito.agregar');
-Route::get('/carrito', [CarritoController::class, 'ver'])->name('carrito.ver');
+Route::get('/carritos', [CarritoController::class, 'index'])->name('carritos.index')->middleware('auth');
+Route::post('/carritos', [CarritoController::class, 'store'])->name('carritos.store')->middleware('auth');
+Route::delete('/carritos/vaciar', [CarritoController::class, 'vaciar'])->name('carritos.vaciar');
+Route::delete('/carritos/{carrito}/eliminar-unidad', [CarritoController::class, 'eliminarUnidad'])->name('carritos.eliminarUnidad');
+Route::post('/carritos/{carrito}/agregar-unidad', [CarritoController::class, 'agregarUnidad'])->name('carritos.agregarUnidad');
+
+
+
+
 Route::post('/pedido/confirmar', [PedidoController::class, 'confirmar'])->name('pedido.confirmar');

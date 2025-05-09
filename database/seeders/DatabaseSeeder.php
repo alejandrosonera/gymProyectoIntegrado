@@ -6,6 +6,7 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
@@ -20,9 +21,9 @@ class DatabaseSeeder extends Seeder
         // Crear manualmente un usuario admin
     User::create([
             'name' => 'Alejandro Sonera Benzal',
-            'email' => 'adminSonera@gmail.com',
+            'email' => 'adminsonera@gmail.com',
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => 'sonera',
             'two_factor_secret' => null,
             'rol' => 'admin',
             'two_factor_recovery_codes' => null,
@@ -32,6 +33,9 @@ class DatabaseSeeder extends Seeder
     ]);
 
         User::factory(15)->create();
+
+        Storage::deleteDirectory('images/productos');
+        Storage::makeDirectory('images/productos');
 
         $this->call(ClaseSeeder::class);
         $this->call(ProductoSeeder::class);

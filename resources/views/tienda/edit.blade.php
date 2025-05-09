@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight flex items-center">
-            <i class="fas fa-plus-circle mr-2 text-indigo-600"></i> Crear nuevo producto
+            <i class="fas fa-edit mr-2 text-indigo-600"></i> Editar Producto
         </h2>
     </x-slot>
 
@@ -22,14 +22,15 @@
             </div>
             @endif
 
-            <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <form action="{{ route('productos.update', $producto->id) }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 @csrf
+                @method('PUT')
 
                 <div class="mb-4">
                     <label for="nombre" class="block text-gray-700 font-bold mb-2">
                         <i class="fas fa-tag mr-2 text-indigo-500"></i>Nombre
                     </label>
-                    <input type="text" id="nombre" name="nombre" value="{{ old('nombre') }}"
+                    <input type="text" id="nombre" name="nombre" value="{{ old('nombre', $producto->nombre) }}"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline">
                 </div>
 
@@ -38,14 +39,14 @@
                         <i class="fas fa-align-left mr-2 text-indigo-500"></i>Descripción
                     </label>
                     <textarea id="descripcion" name="descripcion" rows="4"
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline">{{ old('descripcion') }}</textarea>
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline">{{ old('descripcion', $producto->descripcion) }}</textarea>
                 </div>
 
                 <div class="mb-4">
                     <label for="precio" class="block text-gray-700 font-bold mb-2">
                         <i class="fas fa-euro-sign mr-2 text-indigo-500"></i>Precio (€)
                     </label>
-                    <input type="number" id="precio" name="precio" value="{{ old('precio') }}" step="0.01"
+                    <input type="number" id="precio" name="precio" value="{{ old('precio', $producto->precio) }}" step="0.01"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline">
                 </div>
 
@@ -53,7 +54,7 @@
                     <label for="stock" class="block text-gray-700 font-bold mb-2">
                         <i class="fas fa-boxes mr-2 text-indigo-500"></i>Stock
                     </label>
-                    <input type="number" id="stock" name="stock" value="{{ old('stock') }}" min="0"
+                    <input type="number" id="stock" name="stock" value="{{ old('stock', $producto->stock) }}" min="0"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline">
                 </div>
 
@@ -66,10 +67,17 @@
                         onchange="previewImage(event)">
 
                     <div id="preview-container" class="mt-2 hidden">
-                        <img id="preview" src="" alt="Previsualización"
-                            class="w-10 h-10 object-cover border rounded shadow mx-auto">
+                        <img id="preview" src="" alt="Vista previa de la imagen" class="w-32 h-32 object-cover border rounded shadow mx-auto">
                     </div>
 
+                    <!-- Mostrar la imagen actual si existe -->
+                    @if($producto->imagen)
+                    <div class="mt-4">
+                        <label class="block text-gray-700 font-bold mb-2">Imagen actual</label>
+                        <img src="{{ asset('storage/' . $producto->imagen) }}" alt="Imagen del producto"
+                            class="w-32 h-32 object-cover border rounded shadow mx-auto">
+                    </div>
+                    @endif
                 </div>
 
                 <div class="flex flex-col sm:flex-row justify-between">
