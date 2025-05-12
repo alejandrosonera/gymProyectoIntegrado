@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Carrito;
+use App\Models\DetallePedido;
 use App\Models\Pedido;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PedidoController extends Controller
 {
@@ -12,7 +15,8 @@ class PedidoController extends Controller
      */
     public function index()
     {
-        //
+        $pedidos = Pedido::where('user_id', Auth::id())->with('detalles.producto')->get();
+        return view('pedidos.index', compact('pedidos'));
     }
 
     /**
@@ -28,7 +32,38 @@ class PedidoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = Auth::user();
+        $carrito = Carrito::where('user_id', $user->id)->with('producto')->get();
+
+        if ($carrito->isEmpty()) {
+            return redirect()->back()->with('mensaje', 'Tu carrito está vacío.');
+        }
+
+        $total = $carrito->sum(fn($item) => $item->producto->precio * $item->cantidad);
+
+        $pedido = Pedido::create([
+            'user_id' => $user->id,
+            'total' => $total,
+            'estado' => 'pendiente',
+        ]);
+
+
+        foreach ($carrito as $item) {
+            $precioUnitario = $item->producto->precio;
+            $cantidad = $item->cantidad;
+
+            DetallePedido::create([
+                'pedido_id' => $pedido->id,
+                'producto_id' => $item->producto_id,
+                'cantidad' => $cantidad,
+                'precio_unitario' => $precioUnitario,
+                'subtotal' => $precioUnitario * $cantidad,
+            ]);
+        }
+
+        Carrito::where('user_id', $user->id)->delete();
+
+        return redirect()->route('pedidos.index')->with('mensaje', '¡Pedido realizado con éxito!');
     }
 
     /**

@@ -19,16 +19,18 @@ Route::middleware([
     })->name('dashboard');
 
     Route::get('showclases', Clase::class)->name('showclases');
+    Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
+    Route::post('/pedidos', [PedidoController::class, 'store'])->name('pedidos.store');
+    Route::get('/carritos', [CarritoController::class, 'index'])->name('carritos.index')->middleware('auth');
+    Route::post('/carritos', [CarritoController::class, 'store'])->name('carritos.store')->middleware('auth');
+    Route::delete('/carritos/vaciar', [CarritoController::class, 'vaciar'])->name('carritos.vaciar');
+    Route::delete('/carritos/{carrito}/eliminar-unidad', [CarritoController::class, 'eliminarUnidad'])->name('carritos.eliminarUnidad');
+    Route::post('/carritos/{carrito}/agregar-unidad', [CarritoController::class, 'agregarUnidad'])->name('carritos.agregarUnidad');
 });
 
 Route::get('/tienda', [ProductoController::class, 'index'])->name('tienda.index');
 
 Route::resource('productos', ProductoController::class);
-Route::get('/carritos', [CarritoController::class, 'index'])->name('carritos.index')->middleware('auth');
-Route::post('/carritos', [CarritoController::class, 'store'])->name('carritos.store')->middleware('auth');
-Route::delete('/carritos/vaciar', [CarritoController::class, 'vaciar'])->name('carritos.vaciar');
-Route::delete('/carritos/{carrito}/eliminar-unidad', [CarritoController::class, 'eliminarUnidad'])->name('carritos.eliminarUnidad');
-Route::post('/carritos/{carrito}/agregar-unidad', [CarritoController::class, 'agregarUnidad'])->name('carritos.agregarUnidad');
 
 
 
