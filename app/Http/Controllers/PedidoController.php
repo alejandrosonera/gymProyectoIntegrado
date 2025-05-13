@@ -63,7 +63,8 @@ class PedidoController extends Controller
 
         Carrito::where('user_id', $user->id)->delete();
 
-        return redirect()->route('pedidos.index')->with('mensaje', '¡Pedido realizado con éxito!');
+        return redirect()->route('pedidos.index')->with('pedido_realizado', true);
+
     }
 
     /**

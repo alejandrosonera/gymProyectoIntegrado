@@ -58,10 +58,11 @@
                 </li>
                 @endforeach
             </ul>
-            <!-- Botón para realizar pedido -->
-            <form action="{{ route('pedidos.store') }}" method="POST" onsubmit="return confirm('¿Deseas finalizar y realizar este pedido?')">
+
+            <!-- Botón para realizar pedido con SweetAlert2 -->
+            <form id="realizar-pedido-form" action="{{ route('pedidos.store') }}" method="POST">
                 @csrf
-                <button type="submit" class="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded shadow">
+                <button type="button" id="realizar-pedido-btn" class="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded shadow">
                     <i class="fas fa-check-circle"></i> Realizar Pedido
                 </button>
             </form>
@@ -75,4 +76,25 @@
             </div>
         </div>
     </div>
+
+    <!-- Script SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('realizar-pedido-btn').addEventListener('click', function () {
+            Swal.fire({
+                title: '¿Confirmar Pedido?',
+                text: "¿Deseas finalizar y realizar este pedido?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#4f46e5',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, realizar pedido',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('realizar-pedido-form').submit();
+                }
+            });
+        });
+    </script>
 </x-app-layout>
