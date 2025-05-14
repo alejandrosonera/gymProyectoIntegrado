@@ -13,11 +13,17 @@ class PedidoController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
-        $pedidos = Pedido::where('user_id', Auth::id())->with('detalles.producto')->get();
+        $pedidos = Pedido::where('user_id', Auth::id())
+            ->with('detalles.producto')
+            ->orderByDesc('created_at') // Opcional: muestra primero los más recientes
+            ->paginate(5); // Muestra 5 pedidos por página
+
         return view('pedidos.index', compact('pedidos'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -64,7 +70,6 @@ class PedidoController extends Controller
         Carrito::where('user_id', $user->id)->delete();
 
         return redirect()->route('pedidos.index')->with('pedido_realizado', true);
-
     }
 
     /**

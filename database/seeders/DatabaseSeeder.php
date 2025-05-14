@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             'current_team_id' => null,
     ]);
 
-        User::factory(15)->create();
+        $this->call(UserSeeder::class);
 
         Storage::deleteDirectory('images/productos');
         Storage::makeDirectory('images/productos');

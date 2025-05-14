@@ -1,95 +1,97 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <h2 class="font-semibold text-2xl text-gray-800 flex items-center gap-2">
                 🛍️ Tienda del Gimnasio
             </h2>
 
-            @auth
-            @if(auth()->user()->rol === 'admin')
-            <a href="{{ route('productos.create') }}"
-                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
-                + Nuevo Producto
-            </a>
-            @endif
-            <div class="flex space-x-2">
-                @if(auth()->user()->rol !== 'admin')
-                <a href="{{ route('carritos.index') }}"
-                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                    Ver Carrito
-                </a>
-                <a href="{{ route('pedidos.index') }}"
-                    class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">
-                    Mis Pedidos
-                </a>
-                @endif
+            <div class="flex flex-wrap gap-3">
+                @auth
+                    @if(auth()->user()->rol === 'admin')
+                        <a href="{{ route('productos.create') }}"
+                            class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow transition duration-300">
+                            <i class="fas fa-plus-circle"></i> Nuevo Producto
+                        </a>
+                    @else
+                        <a href="{{ route('carritos.index') }}"
+                            class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition duration-300">
+                            <i class="fas fa-shopping-cart"></i> Ver Carrito
+                        </a>
+                        <a href="{{ route('pedidos.index') }}"
+                            class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg shadow transition duration-300">
+                            <i class="fas fa-box"></i> Mis Pedidos
+                        </a>
+                    @endif
+                @endauth
             </div>
-            @endauth
         </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-10 bg-gray-100 min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             @if(session('mensaje'))
-            <div id="mensaje" class="mb-4 p-4 bg-green-500 text-white rounded">
-                {{ session('mensaje') }}
-            </div>
+                <div id="mensaje"
+                    class="mb-6 p-4 bg-green-100 border-l-4 border-green-500 text-green-800 rounded shadow-sm">
+                    <i class="fas fa-check-circle mr-2"></i> {{ session('mensaje') }}
+                </div>
             @endif
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($productos as $producto)
-                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300">
-                    <h3 class="text-lg font-bold text-gray-900 mb-2">
-                        {{ $producto->nombre }}
-                    </h3>
+                    <div class="bg-white rounded-xl shadow-md hover:shadow-xl hover:scale-[1.01] transition duration-300 overflow-hidden">
+                        <img src="{{ asset('storage/' . $producto->imagen) }}" alt="Imagen de {{ $producto->nombre }}"
+                            class="w-full h-48 object-cover">
 
-                    <p class="text-gray-700 text-sm mb-4">
-                        <img src="{{ asset('storage/' . $producto->imagen) }}" alt="Imagen de producto" class="w-full h-48 object-cover rounded">
-                    </p>
+                        <div class="p-5">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-1">
+                                {{ $producto->nombre }}
+                            </h3>
 
-                    <p class="text-gray-700 text-sm mb-4">
-                        {{ $producto->descripcion }}
-                    </p>
+                            <p class="text-sm text-gray-600 mb-3">
+                                {{ $producto->descripcion }}
+                            </p>
 
-                    <p class="text-indigo-600 font-semibold text-lg mb-4">
-                        {{ number_format($producto->precio, 2) }} €
-                    </p>
+                            <p class="text-indigo-600 font-bold text-lg mb-4">
+                                {{ number_format($producto->precio, 2) }} €
+                            </p>
 
-                    @auth
-                    @if(auth()->user()->rol === 'cliente')
-                    <form action="{{ route('carritos.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="producto_id" value="{{ $producto->id }}">
-                        <input type="hidden" name="cantidad" value="1">
-                        <button type="submit" class="text-white bg-indigo-500 hover:bg-indigo-600 px-3 py-1 rounded text-sm">
-                            <i class="fas fa-cart-plus"></i> Añadir
-                        </button>
-                    </form>
-                    @endif
-                    @endauth
+                            @auth
+                                @if(auth()->user()->rol === 'cliente')
+                                    <form action="{{ route('carritos.store') }}" method="POST" class="mb-3">
+                                        @csrf
+                                        <input type="hidden" name="producto_id" value="{{ $producto->id }}">
+                                        <input type="hidden" name="cantidad" value="1">
+                                        <button type="submit"
+                                            class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded transition duration-300">
+                                            <i class="fas fa-cart-plus"></i> Añadir al Carrito
+                                        </button>
+                                    </form>
+                                @endif
+                            @endauth
 
+                            @auth
+                                @if(auth()->user()->rol === 'admin')
+                                    <div class="flex justify-between items-center mt-2 text-sm">
+                                        <a href="{{ route('productos.edit', $producto->id) }}"
+                                            class="text-green-600 hover:underline flex items-center gap-1">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
 
-                    @auth
-                    @if(auth()->user()->rol === 'admin')
-                    <div class="flex justify-between mt-4">
-                        <!-- Editar producto -->
-                        <a href="{{ route('productos.edit', $producto->id) }}" class="text-green-500 hover:text-green-700">
-                            <i class="fas fa-edit"></i> Editar
-                        </a>
-
-                        <!-- Borrar producto -->
-                        <form action="{{ route('productos.destroy', $producto->id) }}" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-500 hover:text-red-700">
-                                <i class="fas fa-trash-alt"></i> Borrar
-                            </button>
-                        </form>
+                                        <form action="{{ route('productos.destroy', $producto->id) }}" method="POST"
+                                            onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="text-red-600 hover:underline flex items-center gap-1">
+                                                <i class="fas fa-trash-alt"></i> Borrar
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endif
+                            @endauth
+                        </div>
                     </div>
-                    @endif
-                    @endauth
-                </div>
                 @endforeach
             </div>
         </div>
@@ -97,11 +99,9 @@
 
     <script>
         @if(session('mensaje'))
-        setTimeout(function() {
+        setTimeout(() => {
             const mensaje = document.getElementById('mensaje');
-            if (mensaje) {
-                mensaje.style.display = 'none';
-            }
+            if (mensaje) mensaje.remove();
         }, 3000);
         @endif
     </script>
