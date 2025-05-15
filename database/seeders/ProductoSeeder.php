@@ -24,7 +24,7 @@ class ProductoSeeder extends Seeder
     Producto::create([
         'nombre' => 'Proteína en Polvo',
         'descripcion' => 'Proteína Whey de alta calidad',
-        'precio' => 45.00,
+        'precio' => 25.00,
         'stock' => 50,
         'imagen' => 'proteina.jpg',
     ]);
@@ -32,7 +32,7 @@ class ProductoSeeder extends Seeder
     Producto::create([
         'nombre' => 'Suplemento de Creatina',
         'descripcion' => 'Mejora el rendimiento físico y la recuperación',
-        'precio' => 25.00,
+        'precio' => 22.95,
         'stock' => 70,
         'imagen' => 'creatina.jpg',
     ]);
@@ -40,7 +40,7 @@ class ProductoSeeder extends Seeder
     Producto::create([
         'nombre' => 'Barras de proteína',
         'descripcion' => 'Barras energéticas ricas en proteína para el entrenamiento',
-        'precio' => 12.00,
+        'precio' => 4.95,
         'stock' => 150,
         'imagen' => 'barras_proteina.jpg',
     ]);
@@ -72,7 +72,7 @@ class ProductoSeeder extends Seeder
     Producto::create([
         'nombre' => 'Guantes de gimnasio',
         'descripcion' => 'Guantes para mayor confort y protección durante el entrenamiento',
-        'precio' => 10.00,
+        'precio' => 8.95,
         'stock' => 120,
         'imagen' => 'guantes_gimnasio.jpg',
     ]);
@@ -80,7 +80,7 @@ class ProductoSeeder extends Seeder
     Producto::create([
         'nombre' => 'Bandas elásticas',
         'descripcion' => 'Perfectas para ejercicios de estiramiento y fuerza',
-        'precio' => 20.00,
+        'precio' => 4.00,
         'stock' => 90,
         'imagen' => 'bandas_elasticas.jpg',
     ]);
@@ -88,7 +88,7 @@ class ProductoSeeder extends Seeder
     Producto::create([
         'nombre' => 'Botella de agua',
         'descripcion' => 'Botella reutilizable para mantenerte hidratado durante el entrenamiento',
-        'precio' => 8.00,
+        'precio' => 0.10,
         'stock' => 200,
         'imagen' => 'botella_agua.jpg',
     ]);

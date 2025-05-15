@@ -52,7 +52,9 @@
                     <div class="flex flex-wrap gap-2 mt-auto">
                         <!-- Botón Eliminar 1 -->
                         <form action="{{ route('carritos.eliminarUnidad', $item->id) }}" method="POST"
-                            onsubmit="return confirm('¿Eliminar una unidad de este producto?')">
+                            class="eliminar-unidad-form"
+                            data-precio="{{ $item->producto->precio }}"
+                            onsubmit="return false;">
                             @csrf
                             @method('DELETE')
                             <button type="submit"
@@ -62,7 +64,10 @@
                         </form>
 
                         <!-- Botón Añadir 1 -->
-                        <form action="{{ route('carritos.agregarUnidad', $item->id) }}" method="POST">
+                        <form action="{{ route('carritos.agregarUnidad', $item->id) }}" method="POST"
+                            class="agregar-unidad-form"
+                            data-precio="{{ $item->producto->precio }}"
+                            onsubmit="return false;">
                             @csrf
                             <button type="submit"
                                 class="flex items-center bg-green-100 text-green-600 hover:bg-green-200 font-semibold px-3 py-1 rounded transition duration-200 shadow-sm">
@@ -74,14 +79,25 @@
                 @endforeach
             </div>
 
-            <!-- Botón Realizar Pedido -->
-            <form id="realizar-pedido-form" action="{{ route('pedidos.store') }}" method="POST" class="text-center mt-10">
-                @csrf
-                <button type="button" id="realizar-pedido-btn"
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded shadow-lg transition duration-300">
-                    <i class="fas fa-check-circle mr-2"></i> Realizar Pedido
+            <!-- Total del Carrito - Diseño Profesional -->
+            <div class="mt-10 max-w-md mx-auto bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-lg shadow-lg p-6 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.105 0-2 .672-2 1.5S10.895 11 12 11s2-.672 2-1.5S13.105 8 12 8z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414m12.728 0l-1.414-1.414M7.05 7.05L5.636 5.636" />
+                        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none"/>
+                    </svg>
+                    <div>
+                        <p class="text-sm uppercase tracking-wider font-semibold opacity-90">Total a pagar</p>
+                        <p id="total-carrito" class="text-3xl font-extrabold leading-none">{{ number_format($carrito->sum(fn($item) => $item->producto->precio * $item->cantidad), 2) }} €</p>
+                    </div>
+                </div>
+                <button onclick="window.location='{{ route('pago.form') }}'"
+                    class="bg-yellow-400 hover:bg-yellow-500 text-indigo-900 font-bold py-3 px-5 rounded-lg shadow-lg transition duration-300 flex items-center gap-2">
+                    <i class="fas fa-credit-card"></i> Pagar Ahora
                 </button>
-            </form>
+            </div>
+
             @endif
         </div>
     </div>
@@ -89,7 +105,7 @@
     <!-- SweetAlert2 Script -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.getElementById('realizar-pedido-btn')?.addEventListener('click', function () {
+        document.getElementById('realizar-pedido-btn')?.addEventListener('click', function() {
             Swal.fire({
                 title: '¿Confirmar Pedido?',
                 text: "¿Deseas finalizar y realizar este pedido?",
@@ -106,4 +122,66 @@
             });
         });
     </script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const totalSpan = document.getElementById("total-carrito");
+
+        const actualizarTotal = (precio, operacion) => {
+            let totalActual = parseFloat(totalSpan.textContent.replace(",", ".").replace(" €", ""));
+            precio = parseFloat(precio);
+
+            if (operacion === "sumar") {
+                totalActual += precio;
+            } else if (operacion === "restar") {
+                totalActual -= precio;
+                if (totalActual < 0) totalActual = 0;
+            }
+
+            totalSpan.textContent = totalActual.toFixed(2).replace(".", ",") + " €";
+        };
+
+        document.querySelectorAll(".agregar-unidad-form").forEach(form => {
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                const precio = this.dataset.precio;
+
+                fetch(this.action, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": this.querySelector('[name="_token"]').value,
+                        "Accept": "application/json"
+                    },
+                }).then(response => {
+                    if (response.ok) {
+                        actualizarTotal(precio, "sumar");
+                        location.reload(); // quita esta línea si quieres que no recargue
+                    }
+                });
+            });
+        });
+
+        document.querySelectorAll(".eliminar-unidad-form").forEach(form => {
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                const precio = this.dataset.precio;
+
+                fetch(this.action, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": this.querySelector('[name="_token"]').value,
+                        "X-HTTP-Method-Override": "DELETE",
+                        "Accept": "application/json"
+                    },
+                }).then(response => {
+                    if (response.ok) {
+                        actualizarTotal(precio, "restar");
+                        location.reload(); // quita esta línea si quieres que no recargue
+                    }
+                });
+            });
+        });
+    });
+    </script>
+
 </x-app-layout>

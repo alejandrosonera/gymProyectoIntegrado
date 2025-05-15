@@ -32,7 +32,8 @@ Route::get('/tienda', [ProductoController::class, 'index'])->name('tienda.index'
 
 Route::resource('productos', ProductoController::class);
 
-
-
-
 Route::post('/pedido/confirmar', [PedidoController::class, 'confirmar'])->name('pedido.confirmar');
+
+Route::get('/pago', [App\Http\Controllers\PagoController::class, 'form'])->name('pago.form');
+Route::post('/pago', [App\Http\Controllers\PagoController::class, 'pagar'])->name('pago.procesar');
+
