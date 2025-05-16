@@ -37,30 +37,74 @@ class PagoController extends Controller
             Charge::create([
                 'amount' => $amount,
                 'currency' => 'eur',
-                'description' => 'Pago de pedido',
+                'description' => $request->plan ? 'Pago suscripción plan ' . $request->plan : 'Pago de pedido',
                 'source' => $request->stripeToken,
             ]);
 
-            // Guardar pedido en DB
             $user = auth()->user();
 
-            // Crear pedido
-            $pedido = $user->pedidos()->create([
-                'nombre' => 'Pedido realizado el ' . now()->format('d/m/Y H:i'),
-                'estado' => 'procesado',  // <-- asegúrate que sea string con comillas simples o dobles
-                'cantidad' => $request->cantidad ?? 1,
-                'total' => $request->total,
+            if ($request->has('plan')) {
+                // Si es un pago de plan: NO crear pedido, sólo redirigir a clases con mensaje
+                return redirect()->route('showclases')->with('success', 'Suscripción realizada con éxito.');
+            } else {
+                // Pago normal, crear pedido
+
+                $pedido = $user->pedidos()->create([
+                    'nombre' => 'Pedido realizado el ' . now()->format('d/m/Y H:i'),
+                    'estado' => 'procesado',
+                    'cantidad' => $request->cantidad ?? 1,
+                    'total' => $request->total,
+                ]);
+
+                // Vaciar carrito
+                $user->carritos()->delete();
+
+                return redirect()->route('pedidos.index')->with('pedido_realizado', true);
+            }
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al procesar el pago: ' . $e->getMessage());
+        }
+    }
+
+
+    public function formPlan($plan)
+    {
+        // Definimos los precios y nombres de los planes (podrías obtenerlo de BD también)
+        $planes = [
+            'basico' => 29,
+            'premium' => 49,
+            'elite' => 79,
+        ];
+
+        if (!array_key_exists($plan, $planes)) {
+            abort(404);
+        }
+
+        $precio = $planes[$plan];
+        $nombrePlan = ucfirst($plan);
+
+        return view('pago.plan', [
+            'total' => $precio,
+            'plan' => $nombrePlan,
+        ]);
+    }
+
+    public function pagarPlan(Request $request)
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        try {
+            $amount = (int) round($request->total * 100);
+
+            Charge::create([
+                'amount' => $amount,
+                'currency' => 'eur',
+                'description' => 'Pago suscripción plan ' . $request->plan,
+                'source' => $request->stripeToken,
             ]);
 
-
-
-            // Aquí podrías también guardar detalle del pedido, productos, etc.
-            // Por ejemplo, copiar los productos del carrito al pedido
-
-            // Vaciar carrito (implementar método vaciar)
-            $user->carritos()->delete();
-
-            return redirect()->route('pedidos.index')->with('pedido_realizado', true);
+            // No se crea pedido, solo redirige a clases con mensaje
+            return redirect('/clases')->with('success', 'Suscripción realizada con éxito.');
         } catch (\Exception $e) {
             return back()->with('error', 'Error al procesar el pago: ' . $e->getMessage());
         }

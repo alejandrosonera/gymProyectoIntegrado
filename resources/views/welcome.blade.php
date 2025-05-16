@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FitLife Gym</title>
+    <title>SoneGym</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -13,12 +13,15 @@
     <link rel="stylesheet" href="{{ asset('css/principal.css') }}">
 </head>
 
-
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">FitLife<span class="text-primary">Gym</span></a>
+            <!-- Logo e imagen -->
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="{{ asset('storage/logo.png') }}" alt="SoneGym Logo" style="height: 40px; width: auto;" class="me-2">
+                Sone<span class="text-primary">Gym</span>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -76,11 +79,6 @@
         </div>
     </nav>
 
-
-
-
-
-
     <!-- Hero Section -->
     <section id="home" class="hero-section">
         <div class="container">
@@ -104,22 +102,18 @@
         </div>
     </section>
 
-
-
-
     <!-- About Section -->
     <section id="about" class="section-padding">
         <div class="container">
             <div class="row">
                 <div class="col-md-6 mb-4 mb-md-0">
                     <img src="{{ asset('storage/interior.webp') }}" alt="Interior del gimnasio" class="img-fluid rounded">
-
                 </div>
                 <div class="col-md-6">
                     <div class="ps-md-4">
                         <h6 class="text-primary">SOBRE NOSOTROS</h6>
                         <h2 class="mb-4">Más que un gimnasio, somos una familia</h2>
-                        <p class="lead">En FitLife Gym, nos dedicamos a ayudarte a alcanzar tu mejor versión física y mental a través del ejercicio y un estilo de vida saludable.</p>
+                        <p class="lead">En SoneGym, nos dedicamos a ayudarte a alcanzar tu mejor versión física y mental a través del ejercicio y un estilo de vida saludable.</p>
                         <p>Fundado en 2010, nuestro gimnasio ha crecido hasta convertirse en un referente en la ciudad, ofreciendo instalaciones modernas, entrenadores certificados y una comunidad que te apoya en cada paso.</p>
                         <div class="row mt-4">
                             <div class="col-6 mb-3">
@@ -178,6 +172,7 @@
     </section>
 
 
+
     <!-- Trainers Section -->
     <section id="trainers" class="section-padding">
         <div class="container">
@@ -215,7 +210,7 @@
     </section>
 
 
-    <!-- Pricing Section
+    <!-- Pricing Section -->
     <section id="pricing" class="section-padding bg-light">
         <div class="container">
             <div class="text-center mb-5">
@@ -223,7 +218,9 @@
                 <h2>Planes diseñados para todos los objetivos</h2>
                 <p class="lead">Elige el plan que mejor se adapte a tus necesidades y presupuesto</p>
             </div>
+
             <div class="row g-4">
+                <!-- Plan Básico -->
                 <div class="col-md-4">
                     <div class="card price-card shadow h-100">
                         <div class="card-header text-center py-4 bg-light">
@@ -234,37 +231,47 @@
                                 €29<small class="text-muted fw-light">/mes</small>
                             </h1>
                             <ul class="list-unstyled mt-4 mb-5">
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Acceso a sala de musculación</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Horario: 7:00 - 22:00</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>2 clases grupales/semana</li>
-                                <li class="mb-2"><i class="bi bi-x-circle-fill text-muted me-2"></i>Sin entrenador personal</li>
-                                <li class="mb-2"><i class="bi bi-x-circle-fill text-muted me-2"></i>Sin evaluación nutricional</li>
+                                <li><i class="bi bi-check-circle-fill text-primary me-2"></i>Acceso a sala de musculación</li>
+                                <li><i class="bi bi-check-circle-fill text-primary me-2"></i>Horario: 7:00 - 22:00</li>
+                                <li><i class="bi bi-check-circle-fill text-primary me-2"></i>2 clases grupales/semana</li>
+                                <li><i class="bi bi-x-circle-fill text-muted me-2"></i>Sin entrenador personal</li>
+                                <li><i class="bi bi-x-circle-fill text-muted me-2"></i>Sin evaluación nutricional</li>
                             </ul>
-                            <button type="button" class="btn btn-outline-primary btn-lg w-100">Elegir Plan</button>
+                            <button type="button" class="btn btn-outline-primary btn-lg w-100"
+                                onclick="window.location='{{ route('pago.plan.form', 'basico') }}'">
+                                Elegir Plan
+                            </button>
                         </div>
                     </div>
                 </div>
+
+                <!-- Plan Premium -->
                 <div class="col-md-4">
                     <div class="card price-card shadow h-100 border-primary">
-                        <div class="card-header text-center py-4 bg-primary text-white">
+                        <div class="card-header text-center py-4 bg-primary text-white position-relative">
                             <h4>Premium</h4>
-                            <span class="badge bg-warning text-dark">Más Popular</span>
+                            <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-3">Más Popular</span>
                         </div>
                         <div class="card-body text-center">
                             <h1 class="card-title pricing-card-title">
                                 €49<small class="text-muted fw-light">/mes</small>
                             </h1>
                             <ul class="list-unstyled mt-4 mb-5">
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Acceso completo 24/7</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Clases grupales ilimitadas</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>1 sesión con entrenador/mes</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Evaluación física trimestral</li>
-                                <li class="mb-2"><i class="bi bi-x-circle-fill text-muted me-2"></i>Sin evaluación nutricional</li>
+                                <li><i class="bi bi-check-circle-fill text-primary me-2"></i>Acceso completo 24/7</li>
+                                <li><i class="bi bi-check-circle-fill text-primary me-2"></i>Clases grupales ilimitadas</li>
+                                <li><i class="bi bi-check-circle-fill text-primary me-2"></i>1 sesión con entrenador/mes</li>
+                                <li><i class="bi bi-check-circle-fill text-primary me-2"></i>Evaluación física trimestral</li>
+                                <li><i class="bi bi-x-circle-fill text-muted me-2"></i>Sin evaluación nutricional</li>
                             </ul>
-                            <button type="button" class="btn btn-primary btn-lg w-100">Elegir Plan</button>
+                            <button type="button" class="btn btn-primary btn-lg w-100"
+                                onclick="window.location='{{ route('pago.plan.form', 'premium') }}'">
+                                Elegir Plan
+                            </button>
                         </div>
                     </div>
                 </div>
+
+                <!-- Plan Elite -->
                 <div class="col-md-4">
                     <div class="card price-card shadow h-100">
                         <div class="card-header text-center py-4 bg-light">
@@ -275,19 +282,22 @@
                                 €79<small class="text-muted fw-light">/mes</small>
                             </h1>
                             <ul class="list-unstyled mt-4 mb-5">
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Acceso completo 24/7</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Clases grupales ilimitadas</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>4 sesiones con entrenador/mes</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Evaluación física mensual</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Plan nutricional personalizado</li>
+                                <li><i class="bi bi-check-circle-fill text-primary me-2"></i>Acceso completo 24/7</li>
+                                <li><i class="bi bi-check-circle-fill text-primary me-2"></i>Clases grupales ilimitadas</li>
+                                <li><i class="bi bi-check-circle-fill text-primary me-2"></i>4 sesiones con entrenador/mes</li>
+                                <li><i class="bi bi-check-circle-fill text-primary me-2"></i>Evaluación física mensual</li>
+                                <li><i class="bi bi-check-circle-fill text-primary me-2"></i>Plan nutricional personalizado</li>
                             </ul>
-                            <button type="button" class="btn btn-outline-primary btn-lg w-100">Elegir Plan</button>
+                            <button type="button" class="btn btn-outline-primary btn-lg w-100"
+                                onclick="window.location='{{ route('pago.plan.form', 'elite') }}'">
+                                Elegir Plan
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section> -->
+    </section>
 
     <!-- Contact Section -->
     <section id="contact" class="section-padding bg-dark-gradient text-white">
@@ -305,7 +315,7 @@
                             </div>
                             <div>
                                 <h5>Ubicación</h5>
-                                <p>Calle Principal 123, 28001 Madrid, España</p>
+                                <p>Calle Principal 123, 28001 Almeria, España</p>
                             </div>
                         </div>
                         <div class="d-flex mb-4">
@@ -323,7 +333,7 @@
                             </div>
                             <div>
                                 <h5>Email</h5>
-                                <p>info@fitlifegym.com</p>
+                                <p>info@sonegym.com</p>
                             </div>
                         </div>
                         <div class="d-flex">
@@ -386,7 +396,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 mb-4 mb-lg-0">
-                    <h3 class="mb-4">FitLife<span class="text-primary">Gym</span></h3>
+                    <h3 class="mb-4">Sone<span class="text-primary">Gym</span></h3>
                     <p>Nuestro objetivo es ayudarte a alcanzar tu mejor versión física y mental a través del ejercicio y un estilo de vida saludable.</p>
                     <div class="social-icons mt-4">
                         <i class="bi bi-facebook"></i>
@@ -430,7 +440,7 @@
             <hr class="mt-4 mb-4 bg-secondary">
             <div class="row">
                 <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-0">&copy; 2025 FitLife Gym. Todos los derechos reservados.</p>
+                    <p class="mb-0">&copy; 2025 SoneGym. Todos los derechos reservados.</p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
                     <a href="#" class="text-white text-decoration-none me-3">Política de Privacidad</a>

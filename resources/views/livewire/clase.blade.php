@@ -17,6 +17,29 @@
             @livewire('crear-clase')
         </div>
     </div>
+    @if(session('success'))
+<div
+    x-data="{ show: true }"
+    x-init="setTimeout(() => show = false, 5000)"
+    x-show="show"
+    x-transition
+    class="max-w-md mx-auto mt-6 p-4 rounded-lg bg-green-600 text-white shadow-lg flex items-center space-x-3"
+    role="alert"
+>
+    <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+    <p class="font-medium text-lg">
+        {{ session('success') }}
+    </p>
+    <button @click="show = false" aria-label="Cerrar mensaje" class="ml-auto focus:outline-none">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
+</div>
+@endif
+
     @if($clases->count())
     <!-- Grid de clases -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
@@ -71,76 +94,74 @@
             <!-- Lógica para apuntarse/desapuntarse -->
             @auth
             @if (Auth::user()->rol === 'cliente')
-                @if (!$clase->clientes->contains(auth()->id()) && $clase->clientes->count() < $clase->max_participantes)
-                    <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800">
-                        <!-- Verificar si hay conflicto de horario -->
-                        @php
-                            $tieneConflicto = false;
-                            $claseConflicto = null;
+            @if (!$clase->clientes->contains(auth()->id()) && $clase->clientes->count() < $clase->max_participantes)
+                <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800">
+                    <!-- Verificar si hay conflicto de horario -->
+                    @php
+                    $tieneConflicto = false;
+                    $claseConflicto = null;
 
-                            // Obtener solo las clases a las que el usuario está apuntado
-                            $clasesUsuario = App\Models\Clase::whereHas('clientes', function($query) {
-                                $query->where('user_id', Auth::id());
-                            })->get();
+                    // Obtener solo las clases a las que el usuario está apuntado
+                    $clasesUsuario = App\Models\Clase::whereHas('clientes', function($query) {
+                    $query->where('user_id', Auth::id());
+                    })->get();
 
-                            // Convertir la fecha de la clase actual a un objeto Carbon para comparación
-                            $fechaClaseActual = \Carbon\Carbon::parse($clase->fecha_hora);
+                    // Convertir la fecha de la clase actual a un objeto Carbon para comparación
+                    $fechaClaseActual = \Carbon\Carbon::parse($clase->fecha_hora);
 
-                            foreach ($clasesUsuario as $claseUsuario) {
-                                // Convertir la fecha de la clase del usuario a un objeto Carbon
-                                $fechaClaseUsuario = \Carbon\Carbon::parse($claseUsuario->fecha_hora);
+                    foreach ($clasesUsuario as $claseUsuario) {
+                    // Convertir la fecha de la clase del usuario a un objeto Carbon
+                    $fechaClaseUsuario = \Carbon\Carbon::parse($claseUsuario->fecha_hora);
 
-                                // Solo verificar conflicto si es el mismo día y no es la misma clase
-                                if ($fechaClaseActual->isSameDay($fechaClaseUsuario) && $clase->id != $claseUsuario->id) {
-                                    $tieneConflicto = true;
-                                    $claseConflicto = $claseUsuario;
-                                    break;
-                                }
-                            }
-                        @endphp
+                    // Solo verificar conflicto si es el mismo día y no es la misma clase
+                    if ($fechaClaseActual->isSameDay($fechaClaseUsuario) && $clase->id != $claseUsuario->id) {
+                    $tieneConflicto = true;
+                    $claseConflicto = $claseUsuario;
+                    break;
+                    }
+                    }
+                    @endphp
 
-                        @if ($tieneConflicto)
-                            <div class="mb-2 text-sm text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900 p-2 rounded-md">
-                                <p>No puedes apuntarte a esta clase porque ya estás inscrito en "{{ $claseConflicto->nombre }}" el mismo día
-                                ({{ \Carbon\Carbon::parse($claseConflicto->fecha_hora)->format('d/m/Y') }})
-                                a las {{ \Carbon\Carbon::parse($claseConflicto->fecha_hora)->format('H:i') }}.</p>
-                            </div>
-                            <button
-                                class="inline-flex items-center px-6 py-3 border border-gray-400 rounded-md text-sm font-medium text-gray-400 bg-gray-100 dark:bg-gray-700 cursor-not-allowed w-full justify-center"
-                                disabled
-                            >
-                                No disponible - Ya tienes una clase este día
-                            </button>
-                        @else
-                            <button
-                                wire:click="apuntarse({{ $clase->id }})"
-                                class="inline-flex items-center px-6 py-3 border border-indigo-600 dark:border-indigo-400 rounded-md text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800 hover:bg-indigo-200 dark:hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition duration-300 w-full justify-center"
-                            >
-                                Apuntarse a la Clase
-                            </button>
-                        @endif
+                    @if ($tieneConflicto)
+                    <div class="mb-2 text-sm text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900 p-2 rounded-md">
+                        <p>No puedes apuntarte a esta clase porque ya estás inscrito en "{{ $claseConflicto->nombre }}" el mismo día
+                            ({{ \Carbon\Carbon::parse($claseConflicto->fecha_hora)->format('d/m/Y') }})
+                            a las {{ \Carbon\Carbon::parse($claseConflicto->fecha_hora)->format('H:i') }}.</p>
                     </div>
+                    <button
+                        class="inline-flex items-center px-6 py-3 border border-gray-400 rounded-md text-sm font-medium text-gray-400 bg-gray-100 dark:bg-gray-700 cursor-not-allowed w-full justify-center"
+                        disabled>
+                        No disponible - Ya tienes una clase este día
+                    </button>
+                    @else
+                    <button
+                        wire:click="apuntarse({{ $clase->id }})"
+                        class="inline-flex items-center px-6 py-3 border border-indigo-600 dark:border-indigo-400 rounded-md text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800 hover:bg-indigo-200 dark:hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition duration-300 w-full justify-center">
+                        Apuntarse a la Clase
+                    </button>
+                    @endif
+                </div>
                 @elseif ($clase->clientes()->where('user_id', auth()->id())->exists())
-                    <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
-                        <button wire:click="desapuntarse({{ $clase->id }})" class="inline-flex items-center px-6 py-3 border border-red-600 dark:border-red-400 rounded-md text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 hover:bg-red-200 dark:hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-red-400 transition duration-300 w-full justify-center">
-                            Desapuntarse de la Clase
-                        </button>
-                    </div>
+                <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
+                    <button wire:click="desapuntarse({{ $clase->id }})" class="inline-flex items-center px-6 py-3 border border-red-600 dark:border-red-400 rounded-md text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 hover:bg-red-200 dark:hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-red-400 transition duration-300 w-full justify-center">
+                        Desapuntarse de la Clase
+                    </button>
+                </div>
                 @elseif ($clase->clientes()->count() >= $clase->max_participantes)
-                    <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-center">
-                        <span class="text-sm text-gray-600 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 p-2 rounded-md inline-block">
-                            No hay espacio disponible en esta clase.
-                        </span>
-                    </div>
+                <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-center">
+                    <span class="text-sm text-gray-600 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 p-2 rounded-md inline-block">
+                        No hay espacio disponible en esta clase.
+                    </span>
+                </div>
                 @endif
-            @endif
-            @else
+                @endif
+                @else
                 <div class="px-6 py-4 bg-indigo-100 dark:bg-indigo-800 text-right">
                     <a href="{{ route('login') }}" class="inline-flex items-center px-6 py-3 border border-indigo-600 dark:border-indigo-400 rounded-md text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800 hover:bg-indigo-200 dark:hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition duration-300">
                         Inicia sesión para apuntarte
                     </a>
                 </div>
-            @endauth
+                @endauth
         </div>
         @endforeach
     </div>
@@ -199,61 +220,60 @@
 
     <!-- MODAL PARA EDITAR UNA CLASE -->
     <x-dialog-modal wire:model="abrirUpdate">
-                <x-slot name="title">
-                    Editar Clase
-                </x-slot>
-                <x-slot name="content">
-                    <!-- Nombre -->
-                    <div class="mb-4">
-                        <label for="nombre" class="block text-gray-700 font-semibold mb-2">
-                            <i class="fas fa-heading mr-1 text-orange-500"></i>Nombre
-                        </label>
-                        <input type="text" id="nombre" wire:model="uform.nombre" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" required>
-                    </div>
-                    <x-input-error for="uform.nombre" class="text-red-500" />
+        <x-slot name="title">
+            Editar Clase
+        </x-slot>
+        <x-slot name="content">
+            <!-- Nombre -->
+            <div class="mb-4">
+                <label for="nombre" class="block text-gray-700 font-semibold mb-2">
+                    <i class="fas fa-heading mr-1 text-orange-500"></i>Nombre
+                </label>
+                <input type="text" id="nombre" wire:model="uform.nombre" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+            </div>
+            <x-input-error for="uform.nombre" class="text-red-500" />
 
-                    <!-- Descripción -->
-                    <div class="mb-4">
-                        <label for="descripcion" class="block text-gray-700 font-semibold mb-2">
-                            <i class="fas fa-align-left mr-1 text-orange-500"></i>Descripción
-                        </label>
-                        <input type="text" id="descripcion" wire:model="uform.descripcion" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" required>
-                    </div>
-                    <x-input-error for="uform.descripcion" class="text-red-500" />
+            <!-- Descripción -->
+            <div class="mb-4">
+                <label for="descripcion" class="block text-gray-700 font-semibold mb-2">
+                    <i class="fas fa-align-left mr-1 text-orange-500"></i>Descripción
+                </label>
+                <input type="text" id="descripcion" wire:model="uform.descripcion" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+            </div>
+            <x-input-error for="uform.descripcion" class="text-red-500" />
 
-                    <!-- Fecha y hora -->
-                    <div class="mb-4">
-                        <label for="fecha_hora" class="block text-gray-700 font-semibold mb-2">
-                            <i class="fas fa-calendar-alt mr-1 text-orange-500"></i>Fecha y Hora
-                        </label>
-                        <input
-                            type="datetime-local"
-                            id="fecha_hora"
-                            wire:model="uform.fecha_hora"
-                            min="{{ date('Y-m-d\TH:i') }}"
-                            class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        >
-                    </div>
-                    <x-input-error for="uform.fecha_hora" class="text-red-500" />
+            <!-- Fecha y hora -->
+            <div class="mb-4">
+                <label for="fecha_hora" class="block text-gray-700 font-semibold mb-2">
+                    <i class="fas fa-calendar-alt mr-1 text-orange-500"></i>Fecha y Hora
+                </label>
+                <input
+                    type="datetime-local"
+                    id="fecha_hora"
+                    wire:model="uform.fecha_hora"
+                    min="{{ date('Y-m-d\TH:i') }}"
+                    class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500">
+            </div>
+            <x-input-error for="uform.fecha_hora" class="text-red-500" />
 
-                    <!-- Máximo de participantes -->
-                    <div class="mb-6">
-                        <label for="max_participantes" class="block text-gray-700 font-semibold mb-2">
-                            <i class="fas fa-users mr-1 text-orange-500"></i>Máx. Participantes
-                        </label>
-                        <input type="number" id="max_participantes" wire:model="uform.max_participantes" min="1" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" required>
-                    </div>
-                    <x-input-error for="uform.max_participantes" class="text-red-500" />
-                </x-slot>
-                <x-slot name="footer">
-                    <div class="flex justify-between space-x-2">
-                        <button wire:click="update" type="submit" class="w-1/3 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded">
-                            <i class="fas fa-paper-plane mr-1"></i>Enviar
-                        </button>
-                        <button wire:click="cancelar" class="w-1/3 text-center bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded">
-                            <i class="fas fa-times mr-1"></i>Cancelar
-                        </button>
-                    </div>
-                </x-slot>
-            </x-dialog-modal>
+            <!-- Máximo de participantes -->
+            <div class="mb-6">
+                <label for="max_participantes" class="block text-gray-700 font-semibold mb-2">
+                    <i class="fas fa-users mr-1 text-orange-500"></i>Máx. Participantes
+                </label>
+                <input type="number" id="max_participantes" wire:model="uform.max_participantes" min="1" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+            </div>
+            <x-input-error for="uform.max_participantes" class="text-red-500" />
+        </x-slot>
+        <x-slot name="footer">
+            <div class="flex justify-between space-x-2">
+                <button wire:click="update" type="submit" class="w-1/3 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded">
+                    <i class="fas fa-paper-plane mr-1"></i>Enviar
+                </button>
+                <button wire:click="cancelar" class="w-1/3 text-center bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded">
+                    <i class="fas fa-times mr-1"></i>Cancelar
+                </button>
+            </div>
+        </x-slot>
+    </x-dialog-modal>
 </div>
