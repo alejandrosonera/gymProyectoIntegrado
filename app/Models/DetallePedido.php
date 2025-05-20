@@ -7,7 +7,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DetallePedido extends Model
 {
-    protected $fillable=['pedido_id', 'producto_id', 'cantidad', 'subtotal', 'precio_unitario'];
+    protected $fillable = [
+        'pedido_id',
+        'producto_id',
+        'cantidad',
+        'precio_unitario',
+        'subtotal',
+    ];
 
     //RELACION 1:N CON PEDIDO
     public function pedido(): BelongsTo{

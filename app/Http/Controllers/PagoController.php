@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DetallePedido;
 use Illuminate\Http\Request;
 use Stripe\Charge;
 use Stripe\Stripe;
@@ -44,19 +45,35 @@ class PagoController extends Controller
             $user = auth()->user();
 
             if ($request->has('plan')) {
-                // Si es un pago de plan: NO crear pedido, sólo redirigir a clases con mensaje
+                // Pago suscripción
                 return redirect()->route('showclases')->with('success', 'Suscripción realizada con éxito.');
             } else {
-                // Pago normal, crear pedido
+                $carrito = $user->carritos;
 
+                if ($carrito->isEmpty()) {
+                    return redirect()->back()->with('mensaje', 'Tu carrito está vacío. No se puede realizar el pedido.');
+                }
+
+                // Crear pedido principal
                 $pedido = $user->pedidos()->create([
                     'nombre' => 'Pedido realizado el ' . now()->format('d/m/Y H:i'),
                     'estado' => 'procesado',
-                    'cantidad' => $request->cantidad ?? 1,
+                    'cantidad' => $carrito->sum('cantidad'), // Total cantidad de productos
                     'total' => $request->total,
                 ]);
 
-                // Vaciar carrito
+                // Crear detalles de pedido recorriendo el carrito
+                foreach ($carrito as $item) {
+                    DetallePedido::create([
+                        'producto_id' => $item->producto_id,
+                        'cantidad' => $item->cantidad,
+                        'precio_unitario' => $item->producto->precio,
+                        'subtotal' => $item->cantidad * $item->producto->precio,
+                        'pedido_id' => $pedido->id,
+                    ]);
+                }
+
+                // Vaciar carrito después de crear detalles
                 $user->carritos()->delete();
 
                 return redirect()->route('pedidos.index')->with('pedido_realizado', true);
@@ -65,6 +82,9 @@ class PagoController extends Controller
             return back()->with('error', 'Error al procesar el pago: ' . $e->getMessage());
         }
     }
+
+
+
 
 
     public function formPlan($plan)
