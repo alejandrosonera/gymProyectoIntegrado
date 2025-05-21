@@ -16,17 +16,28 @@ class UpdateUserPassword implements UpdatesUserPasswords
      *
      * @param  array<string, string>  $input
      */
-    public function update(User $user, array $input): void
+   public function update($user, array $input)
     {
-        Validator::make($input, [
-            'current_password' => ['required', 'string', 'current_password:web'],
-            'password' => $this->passwordRules(),
-        ], [
-            'current_password.current_password' => __('The provided password does not match your current password.'),
-        ])->validateWithBag('updatePassword');
+        $isTempPassword = session('password_is_temporary');
+
+        $rules = [
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ];
+
+        if (!$isTempPassword) {
+            $rules['current_password'] = ['required'];
+        }
+
+        Validator::make($input, $rules)->after(function ($validator) use ($input, $user, $isTempPassword) {
+            if (!$isTempPassword && !Hash::check($input['current_password'], $user->password)) {
+                $validator->errors()->add('current_password', __('La contraseña actual no es correcta.'));
+            }
+        })->validate();
 
         $user->forceFill([
             'password' => Hash::make($input['password']),
         ])->save();
+
+        session()->forget('password_is_temporary');
     }
 }

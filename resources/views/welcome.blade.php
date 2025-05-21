@@ -14,40 +14,40 @@
 </head>
 
 <body>
-  <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <div class="container">
-        <!-- Logo e imagen -->
-        <a class="navbar-brand d-flex align-items-center" href="#">
-            <img src="{{ asset('storage/logo.png') }}" alt="SoneGym Logo" style="height: 40px; width: auto;" class="me-2">
-            Sone<span class="text-primary">Gym</span>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#home">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#about">Nosotros</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#classes">Clases</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#trainers">Entrenadores</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#pricing">Precios</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#contact">Contacto</a>
-                </li>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <!-- Logo e imagen -->
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="{{ asset('storage/logo.png') }}" alt="SoneGym Logo" style="height: 40px; width: auto;" class="me-2">
+                Sone<span class="text-primary">Gym</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#classes">Clases</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#trainers">Entrenadores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#pricing">Precios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contacto</a>
+                    </li>
 
-                <!-- Mostrar el nombre de usuario si está logueado -->
-                @auth
+                    <!-- Mostrar el nombre de usuario si está logueado -->
+                    @auth
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle me-2"></i>
@@ -58,7 +58,7 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                             <li>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
-                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     Cerrar sesión
                                 </a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -67,44 +67,44 @@
                             </li>
                         </ul>
                     </li>
-                @else
+                    @else
                     <!-- Botones para usuarios no autenticados -->
                     <li class="nav-item d-flex align-items-center gap-2 ms-lg-3">
                         <a class="btn btn-warning text-dark fw-bold" href="{{ route('login') }}">Iniciar sesión</a>
                         <a class="btn btn-outline-light fw-bold" href="{{ route('register') }}">Registrarme</a>
                     </li>
-                @endauth
-            </ul>
+                    @endauth
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
 
-   <!-- Hero Section -->
-<section id="home" class="hero-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6">
-                <h1 class="display-3 fw-bold mb-4">TRANSFORMA TU CUERPO, <span class="text-primary">TRANSFORMA TU VIDA</span></h1>
-                <p class="lead mb-4">Únete a nuestra comunidad fitness y alcanza tus objetivos con entrenadores profesionales y equipamiento de última generación.</p>
-                <div class="d-flex flex-wrap gap-3">
-                    @auth
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h1 class="display-3 fw-bold mb-4">TRANSFORMA TU CUERPO, <span class="text-primary">TRANSFORMA TU VIDA</span></h1>
+                    <p class="lead mb-4">Únete a nuestra comunidad fitness y alcanza tus objetivos con entrenadores profesionales y equipamiento de última generación.</p>
+                    <div class="d-flex flex-wrap gap-3">
+                        @auth
                         <!-- Mostrar solo cuando el usuario esté logueado -->
                         <a href="{{ route('showclases') }}" class="btn btn-primary btn-lg">Apúntate ya!!</a>
-                    @else
+                        @else
                         <!-- Mostrar solo cuando el usuario NO esté logueado -->
                         <a href="{{ route('login') }}" class="btn btn-primary btn-lg">Comenzar Ahora</a>
-                    @endauth
+                        @endauth
 
-                    <a href="#about" class="btn btn-outline-light btn-lg">Conoce Más</a>
+                        <a href="#about" class="btn btn-outline-light btn-lg">Conoce Más</a>
 
-                    <!-- Nuevo botón a la tienda -->
-                    <a href="{{ route('tienda.index') }}" class="btn btn-success btn-lg">Ver Tienda</a>
+                        <!-- Nuevo botón a la tienda -->
+                        <a href="{{ route('tienda.index') }}" class="btn btn-success btn-lg">Ver Tienda</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
     <!-- About Section -->
@@ -455,8 +455,70 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if(session('generatedPassword'))
+    <script>
+        const password = `{{ session('generatedPassword') }}`;
+
+        Swal.fire({
+            title: 'Acceso completado con Google',
+            html: `
+            <p style="margin-bottom: 10px;">Se ha generado automáticamente una contraseña para tu cuenta:</p>
+            <div style="
+                background: #f1f1f1;
+                padding: 10px 15px;
+                border-radius: 8px;
+                font-size: 1.1rem;
+                font-family: 'Courier New', monospace;
+                margin-bottom: 15px;
+                display: inline-block;
+            ">
+                <span id="passwordText">${password}</span>
+            </div>
+            <br>
+            <button id="copyBtn" style="
+                background-color: #3085d6;
+                border: none;
+                color: white;
+                padding: 8px 16px;
+                font-size: 1rem;
+                border-radius: 6px;
+                cursor: pointer;
+            ">
+                Copiar contraseña
+            </button>
+            <p style="font-size: 0.9rem; color: #666; margin-top: 12px;">Puedes cambiar esta contraseña más adelante desde tu perfil.</p>
+        `,
+            icon: 'success',
+            showConfirmButton: false,
+            didOpen: () => {
+                const copyBtn = Swal.getPopup().querySelector('#copyBtn');
+                copyBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(password).then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Contraseña copiada',
+                            text: 'La contraseña ha sido copiada al portapapeles.',
+                            timer: 1800,
+                            showConfirmButton: false
+                        });
+                    }).catch(() => {
+                        Swal.fire('Error', 'No se pudo copiar la contraseña', 'error');
+                    });
+                });
+            }
+        });
+    </script>
+    @endif
+
+
+
+
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
+
 
 </html>

@@ -16,6 +16,8 @@ class Clase extends Component
 {
     use WithPagination;
 
+    public $clase;
+
     public bool $showModal = false;
 
     public FormUpdateClase $uform;
@@ -159,7 +161,8 @@ class Clase extends Component
         // Obtener solo los usuarios que realmente estén inscritos en esta clase
         $this->usuariosApuntados = $clase->clientes()->get();
 
-        $this->dispatch('onMostrarUsuarios', ModelsClase::class);
+        // Ya no necesitamos pasar ModelsClase::class
+        $this->dispatch('onMostrarUsuarios', $claseId);
     }
 
 
@@ -169,6 +172,7 @@ class Clase extends Component
     public function closeModal()
     {
         $this->showModal = false;
+        $this->clase = null;
     }
 
 

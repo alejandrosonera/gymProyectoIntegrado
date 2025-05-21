@@ -18,27 +18,26 @@
         </div>
     </div>
     @if(session('success'))
-<div
-    x-data="{ show: true }"
-    x-init="setTimeout(() => show = false, 5000)"
-    x-show="show"
-    x-transition
-    class="max-w-md mx-auto mt-6 p-4 rounded-lg bg-green-600 text-white shadow-lg flex items-center space-x-3"
-    role="alert"
->
-    <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-    </svg>
-    <p class="font-medium text-lg">
-        {{ session('success') }}
-    </p>
-    <button @click="show = false" aria-label="Cerrar mensaje" class="ml-auto focus:outline-none">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+    <div
+        x-data="{ show: true }"
+        x-init="setTimeout(() => show = false, 5000)"
+        x-show="show"
+        x-transition
+        class="max-w-md mx-auto mt-6 p-4 rounded-lg bg-green-600 text-white shadow-lg flex items-center space-x-3"
+        role="alert">
+        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
         </svg>
-    </button>
-</div>
-@endif
+        <p class="font-medium text-lg">
+            {{ session('success') }}
+        </p>
+        <button @click="show = false" aria-label="Cerrar mensaje" class="ml-auto focus:outline-none">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+    @endif
 
     @if($clases->count())
     <!-- Grid de clases -->
@@ -182,7 +181,7 @@
     </div>
     @endif
     <!-- Modal para ver los usuarios apuntados -->
-    @if (!empty($usuariosApuntados) && $showModal)
+    @if ($showModal)
     <div class="fixed inset-0 flex items-center justify-center z-50 p-4 bg-black bg-opacity-50">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl p-6">
             <div class="flex justify-between items-center">
@@ -195,9 +194,9 @@
             </div>
             <div class="mt-4">
                 <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
-                    @if ($clase->clientes->count() > 0)
+                    @if (count($usuariosApuntados) > 0)
                     <ul class="space-y-3">
-                        @foreach ($clase->clientes as $cliente)
+                        @foreach ($usuariosApuntados as $cliente)
                         <li class="flex items-center justify-between p-2 bg-white dark:bg-gray-600 rounded-md shadow-sm">
                             <span class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ $cliente->name }} {{ $cliente->apellido }}</span>
                             <span class="text-xs text-gray-500 dark:text-gray-400">{{ \Carbon\Carbon::parse($cliente->pivot->created_at)->format('d/m/Y H:i') }}</span>
@@ -217,6 +216,7 @@
         </div>
     </div>
     @endif
+
 
     <!-- MODAL PARA EDITAR UNA CLASE -->
     <x-dialog-modal wire:model="abrirUpdate">

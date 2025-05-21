@@ -13,9 +13,9 @@
             <x-validation-errors class="mb-4" />
 
             @if (session('status'))
-                <div class="mb-4 font-medium text-sm text-green-600">
-                    {{ session('status') }}
-                </div>
+            <div class="mb-4 font-medium text-sm text-green-600">
+                {{ session('status') }}
+            </div>
             @endif
 
             <form method="POST" action="{{ route('login') }}" class="space-y-6">
@@ -39,12 +39,19 @@
                     <label for="remember_me" class="ml-2 text-sm text-gray-600 cursor-pointer">Recordarme</label>
                 </div>
 
+                <a href="{{ route('google.redirect') }}"
+                    class="mt-4 inline-flex items-center justify-center w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    <img src="https://developers.google.com/identity/images/g-logo.png" class="w-5 h-5 mr-2" alt="Google logo">
+                    Iniciar sesión con Google
+                </a>
+
+
                 <!-- Botón y enlace -->
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-6 gap-4">
                     @if (Route::has('password.request'))
-                        <a class="text-sm text-indigo-600 hover:text-indigo-800 underline" href="{{ route('password.request') }}">
-                            ¿Olvidaste tu contraseña?
-                        </a>
+                    <a class="text-sm text-indigo-600 hover:text-indigo-800 underline" href="{{ route('password.request') }}">
+                        ¿Olvidaste tu contraseña?
+                    </a>
                     @endif
 
                     <x-button class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-2 rounded-lg shadow transition duration-200">
