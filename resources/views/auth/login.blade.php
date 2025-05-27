@@ -1,48 +1,67 @@
 <x-guest-layout>
-    <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
+    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 text-gray-800">
 
-        <x-validation-errors class="mb-4" />
+        <!-- Logo y título -->
+        <div class="text-center mb-8">
+            <img src="{{ asset('storage/logo.png') }}" alt="SoneGym Logo" class="w-20 h-20 mx-auto mb-2">
+            <h1 class="text-3xl font-extrabold">Accede a <span class="text-yellow-500">SoneGym</span></h1>
+            <p class="text-sm text-gray-600">Introduce tus credenciales para entrar</p>
+        </div>
 
-        @session('status')
+        <!-- Tarjeta de login -->
+        <div class="w-full max-w-md bg-white text-gray-800 rounded-xl shadow-lg px-8 py-10">
+            <x-validation-errors class="mb-4" />
+
+            @if (session('status'))
             <div class="mb-4 font-medium text-sm text-green-600">
-                {{ $value }}
+                {{ session('status') }}
             </div>
-        @endsession
+            @endif
 
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
+            <form method="POST" action="{{ route('login') }}" class="space-y-6">
+                @csrf
 
-            <div>
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            </div>
+                <!-- Email -->
+                <div>
+                    <x-label for="email" value="Correo electrónico" />
+                    <x-input id="email" class="block mt-1 w-full rounded-lg shadow-sm" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="ejemplo@correo.com" />
+                </div>
 
-            <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
-            </div>
+                <!-- Contraseña -->
+                <div>
+                    <x-label for="password" value="Contraseña" />
+                    <x-input id="password" class="block mt-1 w-full rounded-lg shadow-sm" type="password" name="password" required autocomplete="current-password" placeholder="Tu contraseña" />
+                </div>
 
-            <div class="block mt-4">
-                <label for="remember_me" class="flex items-center">
+                <!-- Recordarme -->
+                <div class="flex items-center">
                     <x-checkbox id="remember_me" name="remember" />
-                    <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-                </label>
-            </div>
+                    <label for="remember_me" class="ml-2 text-sm text-gray-600 cursor-pointer">Recordarme</label>
+                </div>
 
-            <div class="flex items-center justify-end mt-4">
-                @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                        {{ __('Forgot your password?') }}
+                <a href="{{ route('google.redirect') }}"
+                    class="mt-4 inline-flex items-center justify-center w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    <img src="https://developers.google.com/identity/images/g-logo.png" class="w-5 h-5 mr-2" alt="Google logo">
+                    Iniciar sesión con Google
+                </a>
+
+
+                <!-- Botón y enlace -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-6 gap-4">
+                    @if (Route::has('password.request'))
+                    <a class="text-sm text-indigo-600 hover:text-indigo-800 underline" href="{{ route('password.request') }}">
+                        ¿Olvidaste tu contraseña?
                     </a>
-                @endif
+                    @endif
 
-                <x-button class="ms-4">
-                    {{ __('Log in') }}
-                </x-button>
-            </div>
-        </form>
-    </x-authentication-card>
+                    <x-button class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-2 rounded-lg shadow transition duration-200">
+                        Entrar
+                    </x-button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <p class="text-xs text-gray-500 mt-6">© {{ date('Y') }} SoneGym. Todos los derechos reservados.</p>
+    </div>
 </x-guest-layout>

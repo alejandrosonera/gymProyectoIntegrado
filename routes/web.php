@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\auth\CambiarContraseña;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\PagoController;
@@ -16,6 +18,10 @@ Route::resource('productos', ProductoController::class);
 
 // Rutas públicas para confirmar pedido (si debe ser público)
 Route::post('/pedido/confirmar', [PedidoController::class, 'confirmar'])->name('pedido.confirmar');
+
+
+Route::get('/auth/redirect/google', [GoogleController::class, 'redirectToGoogle'])->name('google.redirect');
+Route::get('/auth/callback/google', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
 // Rutas protegidas, solo usuarios autenticados y verificados
 Route::middleware([

@@ -88,7 +88,7 @@ class ProductoSeeder extends Seeder
     Producto::create([
         'nombre' => 'Botella de agua',
         'descripcion' => 'Botella reutilizable para mantenerte hidratado durante el entrenamiento',
-        'precio' => 0.10,
+        'precio' => 0.50,
         'stock' => 200,
         'imagen' => 'botella_agua.jpg',
     ]);

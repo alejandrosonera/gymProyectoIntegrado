@@ -50,7 +50,7 @@
                     @auth
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle me-2"></i> <!-- Ícono del usuario -->
+                            <i class="bi bi-person-circle me-2"></i>
                             <div class="badge bg-primary p-2 rounded-pill">
                                 {{ Auth::user()->name }}
                             </div>
@@ -61,7 +61,6 @@
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     Cerrar sesión
                                 </a>
-                                <!-- Formulario de logout -->
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                     @csrf
                                 </form>
@@ -69,15 +68,17 @@
                         </ul>
                     </li>
                     @else
-                    <!-- Enlace de login con botón resaltado si no está logueado -->
-                    <li class="nav-item">
-                        <a class="btn btn-warning text-dark fw-bold ms-lg-3" href="{{ route('login') }}">Iniciar sesión</a>
+                    <!-- Botones para usuarios no autenticados -->
+                    <li class="nav-item d-flex align-items-center gap-2 ms-lg-3">
+                        <a class="btn btn-warning text-dark fw-bold" href="{{ route('login') }}">Iniciar sesión</a>
+                        <a class="btn btn-outline-light fw-bold" href="{{ route('register') }}">Registrarme</a>
                     </li>
                     @endauth
                 </ul>
             </div>
         </div>
     </nav>
+
 
     <!-- Hero Section -->
     <section id="home" class="hero-section">
@@ -86,21 +87,25 @@
                 <div class="col-lg-6">
                     <h1 class="display-3 fw-bold mb-4">TRANSFORMA TU CUERPO, <span class="text-primary">TRANSFORMA TU VIDA</span></h1>
                     <p class="lead mb-4">Únete a nuestra comunidad fitness y alcanza tus objetivos con entrenadores profesionales y equipamiento de última generación.</p>
-                    <div class="d-flex gap-3">
+                    <div class="d-flex flex-wrap gap-3">
                         @auth
                         <!-- Mostrar solo cuando el usuario esté logueado -->
-                        <a href="{{ route('showclases') }}" class="btn btn-primary btn-lg">Apuntate ya!!</a>
+                        <a href="{{ route('showclases') }}" class="btn btn-primary btn-lg">Apúntate ya!!</a>
                         @else
                         <!-- Mostrar solo cuando el usuario NO esté logueado -->
                         <a href="{{ route('login') }}" class="btn btn-primary btn-lg">Comenzar Ahora</a>
                         @endauth
 
                         <a href="#about" class="btn btn-outline-light btn-lg">Conoce Más</a>
+
+                        <!-- Nuevo botón a la tienda -->
+                        <a href="{{ route('tienda.index') }}" class="btn btn-success btn-lg">Ver Tienda</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
 
     <!-- About Section -->
     <section id="about" class="section-padding">
@@ -450,8 +455,70 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if(session('generatedPassword'))
+    <script>
+        const password = `{{ session('generatedPassword') }}`;
+
+        Swal.fire({
+            title: 'Acceso completado con Google',
+            html: `
+            <p style="margin-bottom: 10px;">Se ha generado automáticamente una contraseña para tu cuenta:</p>
+            <div style="
+                background: #f1f1f1;
+                padding: 10px 15px;
+                border-radius: 8px;
+                font-size: 1.1rem;
+                font-family: 'Courier New', monospace;
+                margin-bottom: 15px;
+                display: inline-block;
+            ">
+                <span id="passwordText">${password}</span>
+            </div>
+            <br>
+            <button id="copyBtn" style="
+                background-color: #3085d6;
+                border: none;
+                color: white;
+                padding: 8px 16px;
+                font-size: 1rem;
+                border-radius: 6px;
+                cursor: pointer;
+            ">
+                Copiar contraseña
+            </button>
+            <p style="font-size: 0.9rem; color: #666; margin-top: 12px;">Puedes cambiar esta contraseña más adelante desde tu perfil.</p>
+        `,
+            icon: 'success',
+            showConfirmButton: false,
+            didOpen: () => {
+                const copyBtn = Swal.getPopup().querySelector('#copyBtn');
+                copyBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(password).then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Contraseña copiada',
+                            text: 'La contraseña ha sido copiada al portapapeles.',
+                            timer: 1800,
+                            showConfirmButton: false
+                        });
+                    }).catch(() => {
+                        Swal.fire('Error', 'No se pudo copiar la contraseña', 'error');
+                    });
+                });
+            }
+        });
+    </script>
+    @endif
+
+
+
+
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
+
 
 </html>

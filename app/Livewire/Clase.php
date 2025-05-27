@@ -16,6 +16,8 @@ class Clase extends Component
 {
     use WithPagination;
 
+    public $clase;
+
     public bool $showModal = false;
 
     public FormUpdateClase $uform;
@@ -64,7 +66,7 @@ class Clase extends Component
         // Verificar si el usuario ya está apuntado a otra clase en el mismo día
         $fechaClaseActual = \Carbon\Carbon::parse($clase->fecha_hora);
 
-        $clasesUsuario = ModelsClase::whereHas('clientes', function($query) {
+        $clasesUsuario = ModelsClase::whereHas('clientes', function ($query) {
             $query->where('user_id', Auth::id());
         })->get();
 
@@ -107,11 +109,11 @@ class Clase extends Component
         }
 
         // Verificar si el usuario ya está apuntado a otra clase en el mismo día
-        $clasesUsuario = ModelsClase::whereHas('clientes', function($query) {
+        $clasesUsuario = ModelsClase::whereHas('clientes', function ($query) {
             $query->where('user_id', Auth::id());
         })
-        ->where('fecha', $clase->fecha)
-        ->get();
+            ->where('fecha', $clase->fecha)
+            ->get();
 
         if ($clasesUsuario->count() > 0) {
             foreach ($clasesUsuario as $claseUsuario) {
@@ -156,18 +158,21 @@ class Clase extends Component
 
         $clase = ModelsClase::findOrFail($claseId);
 
-        // Esto obtiene SOLO los usuarios apuntados a esta clase específica
-        // Y filtra correctamente para mostrar solo los que tienen rol 'cliente'
-        $this->usuariosApuntados = $clase->clientes()->where('users.rol', 'cliente')->get();
+        // Obtener solo los usuarios que realmente estén inscritos en esta clase
+        $this->usuariosApuntados = $clase->clientes()->get();
 
-        $this->dispatch('onMostrarUsuarios', ModelsClase::class);
+        // Ya no necesitamos pasar ModelsClase::class
+        $this->dispatch('onMostrarUsuarios', $claseId);
     }
+
+
 
 
 
     public function closeModal()
     {
         $this->showModal = false;
+        $this->clase = null;
     }
 
 
@@ -195,12 +200,14 @@ class Clase extends Component
     }
 
     //METODOS PARA EDITAR
-    public function edit(ModelsClase $clase) {
+    public function edit(ModelsClase $clase)
+    {
         // $this->authorize('update', $clase);
         $this->uform->setClase($clase);
-        $this->abrirUpdate=true;
+        $this->abrirUpdate = true;
     }
-    public function update() {
+    public function update()
+    {
         $success = $this->uform->formUpdate();
 
         if ($success) {
@@ -210,8 +217,9 @@ class Clase extends Component
         }
         // Si falla, no se cierra el modal y se muestra el error en el formulario
     }
-    public function cancelar() {
-        $this->abrirUpdate=false;
+    public function cancelar()
+    {
+        $this->abrirUpdate = false;
         $this->uform->formReset();
     }
 }
