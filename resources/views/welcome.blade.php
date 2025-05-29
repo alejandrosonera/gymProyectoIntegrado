@@ -320,7 +320,7 @@
                             </div>
                             <div>
                                 <h5>Ubicación</h5>
-                                <p>Calle Principal 123, 28001 Almeria, España</p>
+                                <p>Calle Principal 123, 28001 Almería, España</p>
                             </div>
                         </div>
                         <div class="d-flex mb-4">
@@ -353,26 +353,53 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-lg-6">
                     <div class="card border-0 rounded-3">
                         <div class="card-body p-4 p-md-5">
-                            <form>
+                            {{-- Mensaje de éxito --}}
+                            @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                            @endif
+
+                            {{-- Errores de validación --}}
+                            @if($errors->any())
+                            <div class="alert alert-danger">
+                                <ul class="mb-0">
+                                    @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            @endif
+
+                            <form method="POST" action="{{ route('contacto.enviar') }}">
+                                @csrf
                                 <div class="row g-3">
+
+                                    @auth
+                                    {{-- Usuario autenticado: campos ocultos con sus datos --}}
+                                    <input type="hidden" name="name" value="{{ auth()->user()->name }}">
+                                    <input type="hidden" name="email" value="{{ auth()->user()->email }}">
+                                    @else
+                                    {{-- Usuario no autenticado: mostrar campos para que rellene --}}
                                     <div class="col-md-6">
                                         <label for="name" class="form-label">Nombre</label>
-                                        <input type="text" class="form-control" id="name" placeholder="Tu nombre">
+                                        <input type="text" name="name" class="form-control" id="name" placeholder="Tu nombre" value="{{ old('name') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" placeholder="Tu email">
+                                        <input type="email" name="email" class="form-control" id="email" placeholder="Tu email" value="{{ old('email') }}">
                                     </div>
+                                    @endauth
+
                                     <div class="col-12">
                                         <label for="subject" class="form-label">Asunto</label>
-                                        <input type="text" class="form-control" id="subject" placeholder="Asunto">
+                                        <input type="text" name="subject" class="form-control" id="subject" placeholder="Asunto" value="{{ old('subject') }}">
                                     </div>
                                     <div class="col-12">
                                         <label for="message" class="form-label">Mensaje</label>
-                                        <textarea class="form-control" id="message" rows="5" placeholder="Tu mensaje"></textarea>
+                                        <textarea name="message" class="form-control" id="message" rows="5" placeholder="Tu mensaje">{{ old('message') }}</textarea>
                                     </div>
                                     <div class="col-12">
                                         <button type="submit" class="btn btn-primary w-100 py-3">Enviar Mensaje</button>
@@ -382,9 +409,11 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
+
 
     <!-- Map Section -->
     <section class="container-fluid p-0">
@@ -430,16 +459,6 @@
                         <li class="mb-2"><a href="#" class="text-white text-decoration-none">Evaluación Física</a></li>
                         <li class="mb-2"><a href="#" class="text-white text-decoration-none">Fisioterapia</a></li>
                     </ul>
-                </div>
-                <div class="col-lg-4 col-md-12">
-                    <h5 class="mb-4">Suscríbete a nuestro boletín</h5>
-                    <p>Recibe noticias, consejos de entrenamiento y ofertas especiales directamente en tu bandeja de entrada.</p>
-                    <form class="mt-4">
-                        <div class="input-group mb-3">
-                            <input type="email" class="form-control" placeholder="Tu email" aria-label="Email" aria-describedby="button-addon2">
-                            <button class="btn btn-primary" type="button" id="button-addon2">Suscribirse</button>
-                        </div>
-                    </form>
                 </div>
             </div>
             <hr class="mt-4 mb-4 bg-secondary">
@@ -508,6 +527,19 @@
                     });
                 });
             }
+        });
+    </script>
+    @endif
+
+    @if(session('success'))
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: '¡Enviado!',
+            text: '{{ session('
+            success ') }}',
+            confirmButtonText: 'OK'
         });
     </script>
     @endif
