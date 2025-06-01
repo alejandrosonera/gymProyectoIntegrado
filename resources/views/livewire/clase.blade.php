@@ -199,7 +199,7 @@
                         @foreach ($usuariosApuntados as $cliente)
                         <li class="flex items-center justify-between p-2 bg-white dark:bg-gray-600 rounded-md shadow-sm">
                             <span class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ $cliente->name }} {{ $cliente->apellido }}</span>
-                            <span class="text-xs text-gray-500 dark:text-gray-400">{{ \Carbon\Carbon::parse($cliente->pivot->created_at)->format('d/m/Y H:i') }}</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">{{ $cliente->email }}</span>
                         </li>
                         @endforeach
                     </ul>
