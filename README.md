@@ -1,66 +1,55 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏋️ SoneGym — Plataforma Web de Gestión Integral de Gimnasio
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**SoneGym** es una aplicación web *full-stack* desarrollada como Proyecto Integrado del Ciclo Formativo de Grado Superior en **Desarrollo de Aplicaciones Web (DAW)**. La plataforma digitaliza la operativa diaria de un centro deportivo mediante un sistema multi-rol para la reserva de clases dirigidas, gestión de aforos, comercio electrónico interno y pago de suscripciones.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📸 Capturas de pantalla
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+> *(Arrastra aquí desde el editor de GitHub 3 o 4 capturas de tu memoria: la portada de SoneGym, el horario de clases con Livewire, el carrito de compra y el formulario de pago con Stripe)*
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## ✨ Funcionalidades por rol de usuario
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 👤 Cliente
+- **Autenticación y registro:** Alta con selección de rol, inicio de sesión tradicional y acceso mediante cuenta de **Google**.
+- **Reserva de clases en tiempo real:** Buscador dinámico instantáneo, consulta de horarios, plazas disponibles y botón de inscripción/cancelación con **validación automática de solapamientos** (impide reservar dos clases el mismo día a la misma hora).
+- **Tienda online y carrito:** Catálogo de productos y membresías, gestión dinámica de cantidades en el carrito (`+1`, `-1`, vaciar) e historial detallado de pedidos realizados.
+- **Pasarela de pagos:** Procesamiento de compras y contratación de planes mensuales (*Básico, Premium y Élite*) integrado con la API de **Stripe**.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 👟 Entrenador
+- **Gestión CRUD de clases:** Creación, edición y eliminación de sus propias sesiones mediante ventanas modales con validación de formularios y confirmación preventiva (**SweetAlert2**).
+- **Control de asistencia:** Visualización en tiempo real del listado de clientes inscritos en cada clase.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🛠️ Administrador
+- **Gestión CRUD de la tienda:** Alta, modificación, control de stock, subida de imágenes y eliminación de productos del catálogo.
+- **Supervisión general:** Acceso al listado completo de clases, horarios y monitores del centro.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 💻 Stack Tecnológico
 
-### Premium Partners
+- **Backend:** PHP 8.1+, Laravel (11/12), Laravel Jetstream, Eloquent ORM
+- **Frontend e Interactividad:** Laravel Livewire, Blade, Tailwind CSS, JavaScript, SweetAlert2, FontAwesome, Vite
+- **Base de datos:** SQLite (desarrollo) y MySQL 8.0 (producción)
+- **Pagos e Integraciones:** Stripe API (elementos de tarjeta y cobros)
+- **Despliegue e Infraestructura:** AWS EC2 (Ubuntu 22.04 LTS), Apache2, Composer, Node.js / npm
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+## 🗄️ Estructura de Base de Datos
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+El modelo relacional consta de **7 tablas principales** gestionadas mediante migraciones y *seeders* de Laravel:
+- `users` (con diferenciación de roles: `cliente`, `entrenador`, `admin`)
+- `clases` y tabla pivote `clase_user` (relación `N:M` para inscripciones y control de aforo)
+- `productos`, `carritos`, `pedidos` y `detalle_pedidos` (gestión completa del flujo e-commerce)
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🚀 Instalación y ejecución en local
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. **Clonar el repositorio:**
+   ```bash
+   git clone [https://github.com/alejandrosonera/gymProyectoIntegrado.git](https://github.com/alejandrosonera/gymProyectoIntegrado.git)
+   cd gymProyectoIntegrado
