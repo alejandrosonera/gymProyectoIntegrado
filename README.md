@@ -4,12 +4,6 @@
 
 ---
 
-## 📸 Capturas de pantalla
-
-> *(Arrastra aquí desde el editor de GitHub 3 o 4 capturas de tu memoria: la portada de SoneGym, el horario de clases con Livewire, el carrito de compra y el formulario de pago con Stripe)*
-
----
-
 ## ✨ Funcionalidades por rol de usuario
 
 ### 👤 Cliente
